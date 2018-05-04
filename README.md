@@ -1,3 +1,4 @@
 # rbm-tf
 
-Tensorflow implementation of D-rbm.
+Tensorflow implementation of multilayered D-rbm.
+
