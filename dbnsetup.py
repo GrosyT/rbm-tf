@@ -19,7 +19,7 @@ def dbnsetup(sizes, x_train, opts):
             initfunct = opts.init_type
         elif opts.init_type.isalpha():
             if opts.init_type == 'gauss':
-                initfunct = lambda m,n:
+                initfunct = lambda m,n: np.random.normal(0,0.1,m,n)
 
 
         @property
