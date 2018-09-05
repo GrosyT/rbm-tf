@@ -3,7 +3,7 @@
 # %        sizes : A vector with hidden layer sizes
 # %            x : used to specify size of first hidden layer
 # %         opts : a struct with options see dbncreateopts
-
+import numpy as np
 
 def dbnsetup(sizes, x_train, opts):
     n = x_train.shape[1]
