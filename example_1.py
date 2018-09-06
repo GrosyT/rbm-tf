@@ -5,7 +5,7 @@ import dbncheckopts
 from dbncheckopts import dbncheckopts
 from dbnsetup import dbnsetup
 
-biomag_labeled_1 = sio.loadmat(r"D:\python_project\wip\data_labeled_for_py_1_2.mat")
+biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 
 sizes = 50
 
@@ -43,10 +43,16 @@ dbncheckopts(opts,valid_fields)
 Dbn, dbn_sizes = dbnsetup(sizes, x_train, opts)
 #Dbn = dbnsetup(sizes, x_train, opts)
 
-#                      Dbn instance print
-print(Dbn)
-#print(dir(Dbn))
-print(Dbn.sizes)
+#                      Dbn instance print----------------------------------------------------------------------
+# print(Dbn)
+# print(dir(Dbn))
+# print("Dbn instance sizes: ",Dbn.sizes)
+# print("\n Dbn instance initialization function: ", Dbn.initfunct)
+# initfunct_test1 = Dbn.initfunct(4,5)
+# print(initfunct_test1)
+
+
+
 # Dbn.sizes = [500,40]
 # print(Dbn.sizes)
 # print(Dbn)
