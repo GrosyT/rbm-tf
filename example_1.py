@@ -51,7 +51,9 @@ Dbn, dbn_sizes = dbnsetup(sizes, x_train, opts)
 # initfunct_test1 = Dbn.initfunct(4,5)
 # print(initfunct_test1)
 
-
+#print(opts.learningrate(eps, f, t_learningrate, momentum_value))
+print(opts.momentum(0.45))
+print(opts.learningrate())
 
 # Dbn.sizes = [500,40]
 # print(Dbn.sizes)

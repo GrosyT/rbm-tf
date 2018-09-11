@@ -94,16 +94,32 @@ def dbncreateopts():           # !!!!!tab
         #learningrate = lambda t, momentum: eps*f^(t*(1-momentum))
         # Opts.learningrate = @(t,momentum) eps.*f.^t*(1-momentum);
 
-        def momentum(t_momentum, p_i, T, p_f):
+        @staticmethod
+        def momentum(t_momentum=None):
+            if t_momentum is None:
+                t_momentum = Opts.t_momentum
+                print("true")
+            # else:
+            #     t_momentum = args
+            #    print("false")
+            #t_momentum = Opts.t_momentum
+            T = 50  # momentum ramp up
+            p_f = 0.9  # final momentum
+            p_i = 0.5  # initial momentum
             momentum_value = p_i * (1 - t_momentum / T) + (t_momentum / T)*p_f if t_momentum < T else p_f
             return momentum_value
         #momentum_value = momentum(t_momentum, p_i, T, p_f)
+        #momentum_value = momentum()
 
-        def learningrate(eps, f, t_learningrate, momentum_value):
-            return eps*f**(t_learningrate*(1-momentum_value))
+        def learningrate(t_learningrate=None):
+            if t_learningrate is None:
+                t_learningrate = Opts.t_learningrate
+            eps = Opts.eps
+            f = Opts.f
+            momentum_value = Opts.momentum()#Opts.momentum_value
+            learning_rate_value = eps*f**(t_learningrate*(1-momentum_value))
+            return learning_rate_value
         #momentum = lambda t, p_i, T, p_f: p_i*(1-t/T)+(t/T) if t < T else p_f
-
-
 
         L1 = 0.00
         L2 = 0
@@ -154,7 +170,7 @@ def dbncreateopts():           # !!!!!tab
 
 
 #opts, valid_fields = dbncreateopts()
-opts = dbncreateopts()
+#opts = dbncreateopts()
 #print(opts)
 #print("hello2", opts.test_interval)
 

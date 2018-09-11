@@ -9,7 +9,7 @@ import pprint
 
 
 #-----------------------------test
-opts, valid_fields = dbncreateopts()
+#opts, valid_fields = dbncreateopts()
 
 
 def dbncheckopts(opts, valid_fields):

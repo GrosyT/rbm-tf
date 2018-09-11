@@ -45,14 +45,19 @@ def dbnsetup(sizes, x_train, opts):
         def myfunc(self):
             return self
 
+    rbmlist = []                          #store multiple rbm-s
     for u in range((n_rbm_1)-1):
-        rbmList = []
-        rbmList.append(Dbn.Rbm)
-        Dbn.Rbm.cdn = opts.cdn
-        print(Dbn.Rbm.cdn)
-        print(rbmList[0].cdn)
+        
+        rbmlist.append(Dbn.Rbm)
+        #Dbn.Rbm.cdn = opts.cdn
+        rbmlist[0].cdn = opts.cdn
+        #print("list 0 index: ", rbmlist[0].cdn)
+        # rbmlist.append(Dbn.Rbm)
+        # rbmlist[1].cdn = opts.cdn
+        #print("list 1 index: ", rbmlist[1].cdn)
 
-
+        #if len(opts.learningrate())
+    print("rbmlist :", rbmlist)
 
     # check cdn if its a function handle use it otherwise create a function from the scalar given
 
