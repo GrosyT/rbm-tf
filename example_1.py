@@ -7,7 +7,7 @@ from dbnsetup import dbnsetup
 
 biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 
-sizes = [50,50]
+sizes = [50]
 
 opts, valid_fields = dbncreateopts()
 
@@ -38,8 +38,8 @@ dbncheckopts(opts,valid_fields)
 
 #print("Sizes sizes: ", sizes)
 
-opts.t_learningrate = [0.1,0.5]
-print("learningrate multiple elements: ", opts.t_learningrate)
+# opts.t_learningrate = [0.1,0.5]
+# print("learningrate multiple elements: ", opts.t_learningrate)
 
 
 #dbnsetup(sizes,x_train,opts)
