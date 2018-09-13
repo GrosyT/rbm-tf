@@ -89,7 +89,7 @@ def dbncreateopts():           # !!!!!tab
         p_i = 0.5  # initial momentum
         eps = 0.01  # initial learning rate
         f = 0.9  # learning rate decay
-        t_learningrate = 0.1
+        t_learningrate = [0.1]
         t_momentum = 0.01
         #learningrate = lambda t, momentum: eps*f^(t*(1-momentum))
         # Opts.learningrate = @(t,momentum) eps.*f.^t*(1-momentum);
@@ -117,7 +117,11 @@ def dbncreateopts():           # !!!!!tab
             eps = Opts.eps
             f = Opts.f
             momentum_value = Opts.momentum()#Opts.momentum_value
-            learning_rate_value = eps*f**(t_learningrate*(1-momentum_value))
+            if len(t_learningrate) == 1:
+                learning_rate_value = eps*f**(t_learningrate[0]*(1-momentum_value))
+            else:
+                for i in t_learningrate:
+                    learning_rate_value = eps * f ** (t_learningrate[i] * (1 - momentum_value))
             return learning_rate_value
         #momentum = lambda t, p_i, T, p_f: p_i*(1-t/T)+(t/T) if t < T else p_f
 

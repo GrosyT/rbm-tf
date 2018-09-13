@@ -11,9 +11,9 @@ def crbm_init_weights(m, n):                    #todo complete weight init func 
     pass
 
 def dbnsetup(sizes, x_train, opts):
-    n = x_train.shape[1]
-    dbn_sizes = [n, sizes]
-    n_rbm_1 = len(dbn_sizes)
+    n = x_train.shape[1]  #[2094,254] -> n = 254
+    dbn_sizes = [n] + sizes  # dbn_sizes = [254,50]
+    n_rbm_1 = len(dbn_sizes) -1  # n_rbm_1 = 1
 
     class Dbn:
         assert isinstance(dbn_sizes, object)
@@ -25,6 +25,7 @@ def dbnsetup(sizes, x_train, opts):
         class Rbm:
             def __init__(self, cdn=None):
                 self.cdn = cdn
+                self.learningrate
 
         #% create weight initialization function
         # if opts.init_type == []: #'empty' #isinstance(opts.init_type, empty)
@@ -46,15 +47,24 @@ def dbnsetup(sizes, x_train, opts):
             return self
 
     rbmlist = []                          #store multiple rbm-s
-    for u in range((n_rbm_1)-1):
-        
+    for u in range(n_rbm_1):
+
         rbmlist.append(Dbn.Rbm)
         #Dbn.Rbm.cdn = opts.cdn
         rbmlist[0].cdn = opts.cdn
         #print("list 0 index: ", rbmlist[0].cdn)
         # rbmlist.append(Dbn.Rbm)
         # rbmlist[1].cdn = opts.cdn
-        #print("list 1 index: ", rbmlist[1].cdn)
+        ##print("list 1 index: ", rbmlist[1].cdn)
+        if len(opts.t_learningrate) == n_rbm_1 & n_rbm_1 != 1:
+            rbmlist[u].learningrate = opts.t_learningrate[u]
+        elif (len(opts.t_learningrate) == 1) != 1:
+            raise ValueError("learnfunc. should be 1 or nrbm")
+            rbmlist[u].learningrate = opts.t_learningrate
+
+        #if len(opts.t_learningrate) == 0:
+
+        #if rbmlist[u].learningrate == 1:
 
         #if len(opts.learningrate())
     print("rbmlist :", rbmlist)
