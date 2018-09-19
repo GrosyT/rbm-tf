@@ -51,7 +51,7 @@ def dbncheckopts(opts, valid_fields):
     #% check if y is given if class rbm + check y size if x is given
 
     if opts.classRBM == 1:
-        if len(opts.y_train) == 0 or opts.y_train == "":
+        if len(opts.y_train) == 0 or opts.y_train is None:  # o: if len(opts.y_train) == 0 or opts.y_train == ""
             raise ValueError('Y train can not be empty in case of classRBM!')
     if opts.train_function == "rbmsemisuplearn" and opts.classRBM != 1:
         raise ValueError('Semisupervised training without labels does not make sense, use RBMGENERATIVE')

@@ -90,7 +90,7 @@ def dbncreateopts():           # !!!!!tab
         eps = 0.01  # initial learning rate
         f = 0.9  # learning rate decay
         t_learningrate = [0.1]
-        t_momentum = 0.01
+        t_momentum = [0.01]
         #learningrate = lambda t, momentum: eps*f^(t*(1-momentum))
         # Opts.learningrate = @(t,momentum) eps.*f.^t*(1-momentum);
 
@@ -129,7 +129,7 @@ def dbncreateopts():           # !!!!!tab
         L2 = 0
         L2norm = 0
         sparsity = 0
-        classRBM = 0
+        classRBM = 1    #default matlab value = 0 and declared in example run code to be value 1
         test_interval = 5
 
 
