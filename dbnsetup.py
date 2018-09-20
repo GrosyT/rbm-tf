@@ -6,8 +6,26 @@
 import numpy as np
 
 
+def init_weights(m, n, opts):  # todo complete weight init func in cRBM case
+    if opts.init_type == "gauss":
+        initfunc = lambda m, n : np.random.normal(0, 0.1,(m, n))
+    elif opts.init_type == "crbm":
+        def init_crbm(m, n):
+            # initialize weights from uniform distribution. As described in
+            # Learning Algorithms for the Classification Restricted Boltzmann machine
+            m_max = max(m,n)
+            interval_max = m_max**(-0.5)
+            interval_min = -interval_max
+            weights = interval_min + (interval_max - interval_min) @ np.random.uniform(0,0.1,(m, n))
+            assert max(weights) <= interval_max
+            assert min(weights) >= interval_min
+            initfunc = weights
+            return initfunc
+    return initfunc
 
-def crbm_init_weights(m, n):                    #todo complete weight init func in cRBM case
+
+
+
     pass
 
 def dbnsetup(sizes, x_train, opts):
@@ -19,7 +37,7 @@ def dbnsetup(sizes, x_train, opts):
         assert isinstance(dbn_sizes, object)
         sizes = [n, dbn_sizes]
         n_rbm = len(sizes)
-        initfunct = ""
+        #initfunc = ""
         rbm = [None]
 
         class Rbm:
@@ -82,7 +100,6 @@ def dbnsetup(sizes, x_train, opts):
         else:
             raise ValueError("init_type should be either gauss or cRBM")
 
-
         @property
         def myfunc(self):
             return self
@@ -111,14 +128,14 @@ def dbnsetup(sizes, x_train, opts):
             raise ValueError("Momentum func. should be 1 or nrbm")
 
 
-        #regularization parameters
+        # regularization parameters
         rbmlist[u].L2 = opts.L2
         rbmlist[u].L1 = opts.L1
         rbmlist[u].L2norm = opts.L2norm
         rbmlist[u].sparsity = opts.sparsity
         rbmlist[u].dropout_hidden = opts.dropout_hidden
 
-        #error stuff
+        # error stuff
         rbmlist[u].err_func = opts.err_func
         rbmlist[u].error = []
         rbmlist[u].val_error = []
@@ -127,7 +144,7 @@ def dbnsetup(sizes, x_train, opts):
         rbmlist[u].val_error_measures = []
         rbmlist[u].energy_ratio = []
 
-        #early stopping for non top layers not implemented, because they are not classRBMS
+        # early stopping for non top layers not implemented, because they are not classRBMS
         if (n_rbm_1 - 1) == u:
             rbmlist[u].early_stopping = opts.early_stopping
         else:
@@ -138,12 +155,12 @@ def dbnsetup(sizes, x_train, opts):
         hid_size = dbn_sizes[u+1]
 
         if opts.classRBM == 1 and u == n_rbm_1-1:
-            #init bias and weights for class vectors
+            # init bias and weights for class vectors
             rbmlist[u].classRBM = 1
             rbmlist[u].train_func = opts.train_function
-            n_classes = max(np.transpose(opts.y_train)) #todo: modify to accomodate other dimensions (current: one-hot)
-
-
+            n_classes = max(np.transpose(opts.y_train))  # todo: modify to accomodate other dimensions current: one-hot
+            n_classes = n_classes.astype(int)
+            rbmlist[u].U = init_weights(m, n, opts) #(hidden_size, n_classes)
 
 
         #if len(opts.t_learningrate) == 0:
