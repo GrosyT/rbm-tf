@@ -8,25 +8,27 @@ import numpy as np
 
 def init_weights(m, n, opts):  # todo complete weight init func in cRBM case
     if opts.init_type == "gauss":
-        initfunc = lambda m, n : np.random.normal(0, 0.1,(m, n))
+        #initfunc = lambda m, n : np.random.normal(0, 0.1,(m, n))
+        initfunc = np.random.normal(0, 1, (m, n))
+        return initfunc
     elif opts.init_type == "crbm":
-        def init_crbm(m, n):
             # initialize weights from uniform distribution. As described in
             # Learning Algorithms for the Classification Restricted Boltzmann machine
             m_max = max(m,n)
             interval_max = m_max**(-0.5)
             interval_min = -interval_max
-            weights = interval_min + (interval_max - interval_min) @ np.random.uniform(0,0.1,(m, n))
-            assert max(weights) <= interval_max
-            assert min(weights) >= interval_min
+            weights = interval_min + (interval_max - interval_min) * np.random.uniform(0, 1, (m, n))
+            assert np.amax(weights) <= interval_max
+            assert np.amin(weights) >= interval_min
             initfunc = weights
             return initfunc
-    return initfunc
+    else:
+        raise ValueError("init_type should be either gauss or cRBM")
+
+    # check cdn if its a function handle use it otherwise create a function from the scalar given
 
 
 
-
-    pass
 
 def dbnsetup(sizes, x_train, opts):
     n = x_train.shape[1]  #[2094,254] -> n = 254
@@ -62,6 +64,19 @@ def dbnsetup(sizes, x_train, opts):
             train_func = None
             U = None
             vU = None
+            d = None
+            vd = None
+            W = None
+            vW = None
+            b = None
+            vb = None
+            c = None
+            vc = None
+            rand = None
+            zeros = None
+            rbmdowny = None
+            rbmup = None
+
 
             def __init__(self):
                 self.cdn = None
@@ -85,20 +100,32 @@ def dbnsetup(sizes, x_train, opts):
                 self.train_func = None
                 self.U = None
                 self.vU = None
+                self.d = None
+                self.vd = None
+                self.W = None
+                self.vW = None
+                self.b = None
+                self.vb = None
+                self.c = None
+                self.vc = None
+                self.rand = None
+                self.zeros = None
+                self.rbmdowny = None
+                self.rbmup = None
 
         #% create weight initialization function
         # if opts.init_type == []: #'empty' #isinstance(opts.init_type, empty)
         #     initfunct = opts.init_type
-        if opts.init_type.isalpha():
-            if opts.init_type == 'gauss':
-                initfunct = lambda m, n: np.random.normal(0, 0.1, [m,n])
-            elif opts.init_type == 'crbm':
-                initfunct = crbm_init_weights(int, int)
-            # else:
-            #     #raise SystemExit("init_type should be either gauss or cRBM")
-            #     raise ValueError("init_type should be either gauss or cRBM")
-        else:
-            raise ValueError("init_type should be either gauss or cRBM")
+        # if opts.init_type.isalpha():
+        #     if opts.init_type == 'gauss':
+        #         initfunct = lambda m, n: np.random.normal(0, 0.1, [m,n])
+        #     elif opts.init_type == 'crbm':
+        #         initfunct = crbm_init_weights(int, int)
+        #     # else:
+        #     #     #raise SystemExit("init_type should be either gauss or cRBM")
+        #     #     raise ValueError("init_type should be either gauss or cRBM")
+        # else:
+        #     raise ValueError("init_type should be either gauss or cRBM")
 
         @property
         def myfunc(self):
@@ -110,6 +137,7 @@ def dbnsetup(sizes, x_train, opts):
         rbmlist.append(Dbn.Rbm)
         #Dbn.Rbm.cdn = opts.cdn
         rbmlist[u].cdn = opts.cdn
+        #rbmlist[u].cdn = create_func(opts)   not sure about# t0d0: create function cdn matlab dbnsetup.m line 41 | 168
         #print("list 0 index: ", rbmlist[0].cdn)
         # rbmlist.append(Dbn.Rbm)
         # rbmlist[1].cdn = opts.cdn
@@ -154,13 +182,55 @@ def dbnsetup(sizes, x_train, opts):
         vis_size = dbn_sizes[u]
         hid_size = dbn_sizes[u+1]
 
-        if opts.classRBM == 1 and u == n_rbm_1-1:
-            # init bias and weights for class vectors
+        if opts.classRBM == 1 and u == n_rbm_1-1:  # init bias and weights for class vectors
             rbmlist[u].classRBM = 1
             rbmlist[u].train_func = opts.train_function
-            n_classes = max(np.transpose(opts.y_train))  # todo: modify to accomodate other dimensions current: one-hot
-            n_classes = n_classes.astype(int)
-            rbmlist[u].U = init_weights(m, n, opts) #(hidden_size, n_classes)
+            n_classes = np.amax(np.transpose(opts.y_train)).astype(int)  #done? to-do: modify to accomodate other dimensions current: one-hot
+            #n_classes = n_classes.astype(int)
+            rbmlist[u].U = init_weights(hid_size, n_classes, opts)  # (hidden_size, n_classes)
+            rbmlist[u].vU = np.zeros(hid_size,n_classes)
+            rbmlist[u].d = np.zeros((n_classes,1))
+            rbmlist[u].vd = np.zeros((n_classes, 1))
+
+        else:  # for non-top layers use generative training
+            rbmlist[u].classRBM = 0
+            rbmlist[u].train_func = "rbmgenerative"
+            rbmlist[u].U = []
+            rbmlist[u].vU = []
+            rbmlist[u].d = []
+            rbmlist[u].vd = []
+
+        rbmlist[u].W = init_weights(hid_size, vis_size, opts)
+        rbmlist[u].vW = np.zeros((hid_size, vis_size))
+        rbmlist[u].b = np.zeros((vis_size, 1))
+        rbmlist[u].vb = np.zeros((vis_size, 1))
+        rbmlist[u].c = np.zeros((hid_size, 1))
+        rbmlist[u].vc = np.zeros((hid_size, 1))
+
+
+        # for non class RBM's rbmy should return empty. To avoid if statement
+        # create a function returning empty otherwise use rbmdowny
+
+
+        rbmlist[u].rand = lambda rand: np.random.random()  # todo: replicate matlab function handle calls better
+        rbmlist[u].zeros = lambda zeros: np.zeros(0)
+
+        if rbmlist[u].classRBM:
+            rbmlist[u].rbmdowny = rbmdownyclassrbm
+            rbmlist[u].rbmup = rbmupclassrbm
+        else:
+            rbmlist[u].rbmdowny = rbmdownynotclass
+            rbmlist[u].rbmup = rbmdupnotclassrbm
+
+
+
+
+
+
+
+
+
+
 
 
         #if len(opts.t_learningrate) == 0:
@@ -170,7 +240,7 @@ def dbnsetup(sizes, x_train, opts):
         #if len(opts.learningrate())
     print("rbmlist :", rbmlist)
 
-    # check cdn if its a function handle use it otherwise create a function from the scalar given
+
 
     dbn = Dbn
     return dbn, dbn_sizes                                  #TODO: pass sizes to dbn class better

@@ -147,7 +147,7 @@ def dbncreateopts():           # !!!!!tab
         x_semisup = []
         early_stopping = 0
         patience = 5
-        train_function = "rbmgenerative"
+        train_function = "rbmgenerative"                    # other options: "rbmdiscriminative","semisup"
         hybrid_alpha = 0.5
         semisup_beta = 0.1
         semisup_type = "rbmhybrid"
