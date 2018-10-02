@@ -233,4 +233,4 @@ def dbnsetup(sizes, x_train, opts):
 
     dbn = Dbn()
     # print("dbn = Dbn at dbnsetup: ",dbn)
-    return rbmlist, dbn, dbn_sizes  # TODO: pass sizes to dbn class better
+    return rbmlist[:], dbn, dbn_sizes  # TODO: pass sizes to dbn class better

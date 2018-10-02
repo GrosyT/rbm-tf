@@ -49,11 +49,11 @@ dbncheckopts(opts,valid_fields)
 
 
 #dbnsetup(sizes,x_train,opts)
-
+#rbmlist = []
 rbmlist, dbn, dbn_sizes = dbnsetup(sizes, x_train, opts)
 print("rbmlist[u] at example_1: ", rbmlist[0])
 
-dbntrain(rbmlist, dbn, x_train, opts)
+dbntrain(rbmlist[:], dbn, x_train, opts)
 # Dbn = dbnsetup(sizes, x_train, opts)
 
 #                      Dbn instance print----------------------------------------------------------------------
