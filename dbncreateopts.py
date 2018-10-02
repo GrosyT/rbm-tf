@@ -162,7 +162,7 @@ def dbncreateopts():           # !!!!!tab
 
     #missing : valid_fields = fieldnames(opts);
 
-    opts = Opts
+    opts = Opts()                                         # o: opts = Opts   - not instance but the class object
     valid_fields = dir(opts)
 
     #print(opts)

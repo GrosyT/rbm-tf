@@ -14,7 +14,7 @@ import pprint
 
 def dbncheckopts(opts, valid_fields):
     fields = dir(opts)
-    print("DBN CHECK OPTS: \n")
+
     #print(fields, sep="\n")
     #print("\n".join(fields))                             #-print each element in new line
 
@@ -59,6 +59,7 @@ def dbncheckopts(opts, valid_fields):
         print("TRAINING FUNCTION: ", opts.train_function)
         #raise ValueError('Training function not recognised!')
 
+    print("DBN CHECK OPTS: Done!\n")
 
 
 
