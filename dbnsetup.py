@@ -228,8 +228,8 @@ def dbnsetup(sizes, x_train, opts):
         # if rbmlist[u].learningrate == 1:
 
         # if len(opts.learningrate())
-    print("rbmlist at dbnsetup:", rbmlist)
-    print("rbmlist[u] at dbnsetup:", rbmlist[0])
+    #print("rbmlist at dbnsetup:", rbmlist)
+    #print("rbmlist[u] at dbnsetup:", rbmlist[0])
 
     dbn = Dbn()
     # print("dbn = Dbn at dbnsetup: ",dbn)
