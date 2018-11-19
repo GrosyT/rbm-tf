@@ -16,10 +16,11 @@ sizes = [50]
 opts, valid_fields = dbncreateopts()
 # print("opts: ", opts)
 
-
+opts.batchsize = 349
 # print(sio.whosmat(r"D:\python_project\wip\data_labeled_for_py_1_2.mat"))
 opts.y_train = biomag_labeled_1["y_train"]
 opts.x_train = biomag_labeled_1["x_train"]
+opts.x_val = biomag_labeled_1["x_val"]
 x_train = biomag_labeled_1["x_train"]
 # print("opts_ytrain: ",opts.y_train.shape)
 # print("opts_learningrate: ",opts.learningrate(opts.t_learningrate, opts.eps, /
