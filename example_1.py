@@ -47,7 +47,7 @@ dbncheckopts(opts,valid_fields)
 
 # opts.t_learningrate = [0.1,0.5]
 # print("learningrate multiple elements: ", opts.t_learningrate)
-
+#opts.train_function = 'rbmsemisuplearn'
 
 #dbnsetup(sizes,x_train,opts)
 #rbmlist = []

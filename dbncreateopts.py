@@ -91,38 +91,59 @@ def dbncreateopts():           # !!!!!tab
         f = 0.9  # learning rate decay
         t_learningrate = [0.1]
         t_momentum = [0.01]
-        #learningrate = lambda t, momentum: eps*f^(t*(1-momentum))
+
+        learningrate_lambda = lambda t, momentum: opts.eps * opts.f ** t * (1 - momentum)
+        momentum_lambda = lambda t: opts.p_i * (1 - t / opts.T) + (t / opts.T) if t < opts.T else opts.p_f
+
+        def momentum_func(self,t):
+            momentum = opts.p_i * (1 - t / opts.T) + (t / opts.T) if t < opts.T else opts.p_f
+            return momentum
+
+        def learningrate_func(self, t, momentum):
+            learningrate = opts.eps * opts.f ** t * (1 - momentum)
+            return learningrate
+
+        # learningrate_lambda = lambda t, momentum: opts.eps*opts.f^(t*(1-momentum))
+        # momentum_lambda = lambda t: opts.p_i * (1 - t / opts.T) + (t / opts.T) if t < opts.T else opts.p_f
+        #
+        # def momentum_func(self,t):
+        #     momentum = opts.p_i * (1 - t / opts.T) + (t / opts.T) if t < opts.T else opts.p_f
+        #     return momentum
+        #
+        # def learningrate_func(self,t,momentum):
+        #     learningrate = opts.eps*opts.f^(t*(1-momentum))
+        #     return learningrate
         # Opts.learningrate = @(t,momentum) eps.*f.^t*(1-momentum);
 
-        @staticmethod
-        def momentum(t_momentum=None):
-            if t_momentum is None:
-                t_momentum = Opts.t_momentum
-                print("true")
-            # else:
-            #     t_momentum = args
-            #    print("false")
-            #t_momentum = Opts.t_momentum
-            T = 50  # momentum ramp up
-            p_f = 0.9  # final momentum
-            p_i = 0.5  # initial momentum
-            momentum_value = p_i * (1 - t_momentum / T) + (t_momentum / T)*p_f if t_momentum < T else p_f
-            return momentum_value
-        #momentum_value = momentum(t_momentum, p_i, T, p_f)
-        #momentum_value = momentum()
-
-        def learningrate(t_learningrate=None):
-            if t_learningrate is None:
-                t_learningrate = Opts.t_learningrate
-            eps = Opts.eps
-            f = Opts.f
-            momentum_value = Opts.momentum()#Opts.momentum_value
-            if len(t_learningrate) == 1:
-                learning_rate_value = eps*f**(t_learningrate[0]*(1-momentum_value))
-            else:
-                for i in t_learningrate:
-                    learning_rate_value = eps * f ** (t_learningrate[i] * (1 - momentum_value))
-            return learning_rate_value
+        # @staticmethod
+        # def momentum(t_momentum=None):
+        #     if t_momentum is None:
+        #         t_momentum = Opts.t_momentum
+        #         # print("true")
+        #     # else:
+        #     #     t_momentum = args
+        #     #    print("false")
+        #     #t_momentum = Opts.t_momentum
+        #     T = 50  # momentum ramp up
+        #     p_f = 0.9  # final momentum
+        #     p_i = 0.5  # initial momentum
+        #     momentum_value = p_i * (1 - t_momentum / T) + (t_momentum / T)*p_f if t_momentum < T else p_f
+        #     return momentum_value
+        # #momentum_value = momentum(t_momentum, p_i, T, p_f)
+        # #momentum_value = momentum()
+        #
+        # def learningrate(t_learningrate=None):
+        #     if t_learningrate is None:
+        #         t_learningrate = Opts.t_learningrate
+        #     eps = Opts.eps
+        #     f = Opts.f
+        #     momentum_value = Opts.momentum()#Opts.momentum_value
+        #     if len(t_learningrate) == 1:
+        #         learning_rate_value = eps*f**(t_learningrate[0]*(1-momentum_value))
+        #     else:
+        #         for i in t_learningrate:
+        #             learning_rate_value = eps * f ** (t_learningrate[i] * (1 - momentum_value))
+        #     return learning_rate_value
         #momentum = lambda t, p_i, T, p_f: p_i*(1-t/T)+(t/T) if t < T else p_f
 
         L1 = 0.00

@@ -4,6 +4,7 @@
 # %            x : used to specify size of first hidden layer
 # %         opts : a struct with options see dbncreateopts
 import numpy as np
+import types
 
 
 def init_weights(m, n, opts):  # todo complete weight init func in cRBM case
@@ -114,6 +115,14 @@ def dbnsetup(sizes, x_train, opts):
                 self.rbmdowny = None
                 self.rbmup = None
 
+            def create_func(self, val):                         # todo: possible bug with matlab function handle
+                # takes a scalar val or function handle and returns a function returning val if val is not a function
+                if isinstance(val, types.FunctionType):
+                    ret = val
+                else:
+                    ret = lambda epoch: val
+                return ret
+
         # % create weight initialization function
         # if opts.init_type == []: #'empty' #isinstance(opts.init_type, empty)
         #     initfunct = opts.init_type
@@ -137,23 +146,31 @@ def dbnsetup(sizes, x_train, opts):
 
         rbmlist.append(Dbn.Rbm())
         # Dbn.Rbm.cdn = opts.cdn
-        rbmlist[u].cdn = opts.cdn
+        rbmlist[u].cdn = Dbn.Rbm.create_func(Dbn.Rbm.create_func, opts.cdn)
         # rbmlist[u].cdn = create_func(opts)   not sure about# t0d0: create function cdn matlab dbnsetup.m line 41 | 168
         # print("list 0 index: ", rbmlist[0].cdn)
         # rbmlist.append(Dbn.Rbm)
         # rbmlist[1].cdn = opts.cdn
         # print("list 1 index: ", rbmlist[1].cdn)
-        if len(opts.t_learningrate) == n_rbm_1 & n_rbm_1 != 1:
+
+        # if one learningrate/momentum function use this for all
+        # otherwise use individual learningrate/momentum for each rbm
+        if len(opts.t_learningrate) == n_rbm_1 and n_rbm_1 != 1:
             rbmlist[u].learningrate = opts.t_learningrate[u]
-        elif (len(opts.t_learningrate) == 1) != 1:
-            rbmlist[u].learningrate = opts.t_learningrate
-            raise ValueError("learnfunc. should be 1 or nrbm")
+        elif len(opts.t_learningrate) == 1:
+
+            rbmlist[u].learningrate = opts.learningrate_func                                     # -o: rbmlist[u].learningrate = opts.t_learningrate
+            # raise ValueError("learnfunc. should be 1 or nrbm")
+        else:
+            assert len(opts.t_learningrate) == 1, "learnfunc. should be 1 or nrbm"
 
         if len(opts.t_momentum) == n_rbm_1 and n_rbm_1 != 1:
             rbmlist[u].learningrate = opts.t_learningrate[u]
-        elif (len(opts.t_momentum) == 1) != 1:
-            rbmlist[u].momentum = opts.t_momentum
-            raise ValueError("Momentum func. should be 1 or nrbm")
+        elif len(opts.t_momentum) == 1:
+            rbmlist[u].momentum = opts.momentum_func  # -o: rbmlist[u].momentum = opts.t_momentum
+            # raise ValueError("Momentum func. should be 1 or nrbm")
+        else:
+            assert len(opts.t_momentum) == 1, "Momentum func. should be 1 or nrbm"
 
         # regularization parameters
         rbmlist[u].L2 = opts.L2
