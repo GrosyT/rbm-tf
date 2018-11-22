@@ -73,11 +73,12 @@ def rbmtrain(rbm, x_train, opts):
 
             # iterare over semisup batches
             if semisup == 1:
+                opts.x_semisup_batch = extractminibatch(kk_semisup, l_semisup, opts.batchsize,
+                                                        opts.x_semisup, opts)
                 l_semisup = l_semisup + 1  # increment semisup batch
                 if l_semisup > numbatches_semisup:
                     l_semisup = 1
-                opts.x_semisup_batch = extractminibatch(kk_semisup, numbatches_semisup, opts.batchsize,
-                                                        opts.x_semisup, opts)
+
 
 
 
