@@ -1,6 +1,8 @@
 import numpy as np
 import math
-
+import sys
+sys.path.insert(0, './util/')
+from extractminibatch import extractminibatch
 
 def rbmtrain(rbm, x_train, opts):
 
@@ -15,7 +17,7 @@ def rbmtrain(rbm, x_train, opts):
     n_samples = x_train.shape[0]
     n_hidden, n_visible = rbm.W.shape
 
-    num_batches = n_samples / opts.batchsize
+    numbatches = n_samples / opts.batchsize
     assert n_samples % opts.batchsize == 0, "Number of batches is not integer"  # 1 <= x_train.all() <= 2
 
     # use validation set or not in calculation of free energy
@@ -46,8 +48,8 @@ def rbmtrain(rbm, x_train, opts):
         semisup = 1
         l_semisup = 0
         n_samples_semisup = opts.x_semisup.shape[0]
-        numbatches_semisup = n_samples_semisup / opts.batchsize
-        assert numbatches_semisup % opts.batchsize == 0, "Number of semisup batches is not integer"
+        numbatches_semisup = int(n_samples_semisup / opts.batchsize)
+        assert numbatches_semisup % 1 == 0, "Number of semisup batches is not integer"
     else:
         semisup = 0
 
@@ -62,10 +64,28 @@ def rbmtrain(rbm, x_train, opts):
         rbm.curLR = rbm.learningrate(opts.t_learningrate[0], rbm.curMomentum)
         rbm.curCDn = rbm.cdn(epoch)
 
+        for l in range(int(numbatches)):
+            v0 = extractminibatch(kk, l, opts.batchsize, x_train, opts)
+            if rbm.classRBM == 1:
+                ey = extractminibatch(kk, l, opts.batchsize, opts.y_train, opts)
+            else:
+                ey = []
+
+            # iterare over semisup batches
+            if semisup == 1:
+                l_semisup = l_semisup + 1  # increment semisup batch
+                if l_semisup > numbatches_semisup:
+                    l_semisup = 1
+                opts.x_semisup_batch = extractminibatch(kk_semisup, numbatches_semisup, opts.batchsize,
+                                                        opts.x_semisup, opts)
 
 
 
 
+
+
+
+    print("extractminibatch call check with shape: ", v0.shape)
     print("rbm.W - rbmtrain.py - súlyok az első rbm-ben: ", rbm.W.shape)
     # n_hidden, n_visible = rbmlist.W.shape
 

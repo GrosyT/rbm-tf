@@ -9,18 +9,21 @@ from dbntrain import dbntrain
 # biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 
 
-biomag_labeled_1 = sio.loadmat("data_labeled_for_py_1_2.mat")
+biomag_labeled_1 = sio.loadmat("./data/data_labeled_6.mat")
+biomag_unlabeled_1 = sio.loadmat("./data/unlabeled_data_5000_set_001.mat")
 
 sizes = [50]
 
 opts, valid_fields = dbncreateopts()
 # print("opts: ", opts)
 
-opts.batchsize = 349
+opts.batchsize = 100
 # print(sio.whosmat(r"D:\python_project\wip\data_labeled_for_py_1_2.mat"))
+print(sio.whosmat("./data/data_labeled_6.mat"))
 opts.y_train = biomag_labeled_1["y_train"]
 opts.x_train = biomag_labeled_1["x_train"]
 opts.x_val = biomag_labeled_1["x_val"]
+opts.x_semisup = biomag_unlabeled_1["unlabeled_data_5000_set_001"]
 x_train = biomag_labeled_1["x_train"]
 # print("opts_ytrain: ",opts.y_train.shape)
 # print("opts_learningrate: ",opts.learningrate(opts.t_learningrate, opts.eps, /
@@ -47,7 +50,7 @@ dbncheckopts(opts,valid_fields)
 
 # opts.t_learningrate = [0.1,0.5]
 # print("learningrate multiple elements: ", opts.t_learningrate)
-#opts.train_function = 'rbmsemisuplearn'
+opts.train_function = 'rbmsemisuplearn'
 
 #dbnsetup(sizes,x_train,opts)
 #rbmlist = []
