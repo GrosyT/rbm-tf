@@ -1,8 +1,12 @@
 import numpy as np
 import math
 import sys
+import statistics
 sys.path.insert(0, './util/')
 from extractminibatch import extractminibatch
+from rbmsemisuplearn import rbmsemisuplearn
+
+
 
 def rbmtrain(rbm, x_train, opts):
 
@@ -41,7 +45,7 @@ def rbmtrain(rbm, x_train, opts):
     # RUN epochs
     init_chains = 1
     chains = []
-    chainssy = []
+    chainsy = []
     best_str = ''
 
     if rbm.train_func == 'rbmsemisuplearn':
@@ -73,11 +77,33 @@ def rbmtrain(rbm, x_train, opts):
 
             # iterare over semisup batches
             if semisup == 1:
-                opts.x_semisup_batch = extractminibatch(kk_semisup, l_semisup, opts.batchsize,
-                                                        opts.x_semisup, opts)
+
                 l_semisup = l_semisup + 1  # increment semisup batch
                 if l_semisup > numbatches_semisup:
                     l_semisup = 1
+                opts.x_semisup_batch = extractminibatch(kk_semisup, numbatches_semisup, opts.batchsize,
+                                                        opts.x_semisup, opts)
+            if opts.traintype == 'PCD' and init_chains == 1:
+                # init chains in first epoch if Persistent contrastive divergence
+
+                # augment semisup PCD chains starting position
+                if semisup:
+                    # init semisup chains at mean training set values -o: not sure if that is correct?
+                    # statistics.mean(opts.y_train)
+                    meany = samplematrix(np.repeat(np.mean(opts.y_train, axis=0), opts.batchsize))
+                    chains = np.concatenate((opts.x_semisup_batch,v0), axis=1)
+                    chainsy = np.concatenate((meany,ey),axis=1)
+                else:
+                    chains = v0
+                    chainsy = ey
+                init_chains = 0
+
+            if rbm.dropout_hidden > 0:
+                rbm.hidden_mask = (rbm.rand(n_hidden.shape[0],opts.batchsize.shape[0])) >   rbm.dropout_hidden
+
+            # calculate rbm gradients
+
+
 
 
 
