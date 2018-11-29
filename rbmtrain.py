@@ -102,7 +102,7 @@ def rbmtrain(rbm, x_train, opts):
                 rbm.hidden_mask = (rbm.rand(n_hidden.shape[0],opts.batchsize.shape[0])) >   rbm.dropout_hidden
 
             # calculate rbm gradients
-
+            grads, c_err, chains, chainsy = rbm.train_func(rbm, v0, ey, opts, chains, chainsy)
 
 
 
