@@ -201,11 +201,12 @@ def dbnsetup(sizes, x_train, opts):
         if opts.classRBM == 1 and u == n_rbm_1 - 1:  # init bias and weights for class vectors
             rbmlist[u].classRBM = 1
             rbmlist[u].train_func = opts.train_function
-            n_classes = np.amax(np.transpose(opts.y_train)).astype(
-                int)  # done? to-do: modify to accomodate other dimensions current: one-hot
+            n_classes = opts.y_train.shape[1]
+            # o: n_classes = np.amax(np.transpose(opts.y_train)).astype(int)
+            # done? to-do: modify to accomodate other dimensions current: one-hot
             # n_classes = n_classes.astype(int)
             rbmlist[u].U = init_weights(hid_size, n_classes, opts)  # (hidden_size, n_classes)
-            rbmlist[u].vU = np.zeros(hid_size, n_classes)
+            rbmlist[u].vU = np.zeros((hid_size, n_classes))
             rbmlist[u].d = np.zeros((n_classes, 1))
             rbmlist[u].vd = np.zeros((n_classes, 1))
 

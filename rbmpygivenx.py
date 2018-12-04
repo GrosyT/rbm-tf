@@ -28,17 +28,20 @@ def rbmpygivenx(rbm, x, train_or_test):
     # rbm.U = rbm.U[:,None,:]
     rbm.U = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
 
-    F = rbm.U + cwx[:,:,None] # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
+    F = rbm.U + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
 
-    class_log_prob = rbm.zeros[n_samples,n_classes]
+    rbm.zeros = np.zeros((n_samples, n_classes))
+    class_log_prob = rbm.zeros  # -o: class_log_prob = rbm.zeros[n_samples,n_classes]
     for y in range(n_classes):
-        class_log_prob[:,y] = sum(softplus(F[:, :, y])) + rbm.d[y]
+        class_log_prob[:, y] = sum(softplus(F[:, :, y])) + rbm.d[y]
 
-    #normalize probalilities
-    class_prob = math.exp(np.subtract(class_log_prob, (np.amax(class_log_prob, 1))))
+    # normalize probabilities
+    class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
+    class_prob = np.exp(class_log_prob - class_log_prob_amax)
     # class_log_prob - (np.amax(class_log_prob, 1))
+    # o: class_prob = np.exp(np.subtract(class_log_prob, class_log_prob_amax))
 
-    class_prob = np.divide(class_prob, sum(class_prob,1))
+    class_prob = np.divide(class_prob, sum(class_prob, 1))
 
     return class_prob, F
 

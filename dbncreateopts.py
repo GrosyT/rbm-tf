@@ -103,8 +103,6 @@ def dbncreateopts():           # !!!!!tab
             learningrate = opts.eps * opts.f ** t * (1 - momentum)
             return learningrate
 
-
-
         L1 = 0.00
         L2 = 0
         L2norm = 0

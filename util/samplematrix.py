@@ -23,8 +23,8 @@ def samplematrix(x):
     n_samples, n_classes = x.shape
     sample = np.zeros((n_samples,n_classes))
 
-    r = np.random.uniform(n_samples,1)
-    x_c = np.cumsum(x,1)
+    r = np.random.uniform(0, 1, (n_samples, 1))
+    x_c = np.cumsum(x, 1)
     larger = x_c >= r
     idx = max(larger, [], 1)
 
