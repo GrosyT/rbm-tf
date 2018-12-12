@@ -26,17 +26,18 @@ def rbmpygivenx(rbm, x, train_or_test):
         cwx * rbm.hidden_mask
 
     # rbm.U = rbm.U[:,None,:]
-    rbm.U = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
+    rbm.U2 = np.reshape(rbm.U,(50, 1, 12))  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
 
-    F = rbm.U + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
+    F = rbm.U2 + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
 
     rbm.zeros = np.zeros((n_samples, n_classes))
     class_log_prob = rbm.zeros  # -o: class_log_prob = rbm.zeros[n_samples,n_classes]
     for y in range(n_classes):
-        class_log_prob[:, y] = np.sum(softplus(F[:, :, y]), axis=1) + rbm.d[y]
+        softplus_F = softplus(F[:, :, y])
+        class_log_prob[:, y] = np.sum(softplus_F, axis=0) + rbm.d[y]   # axis=1
 
         # o: class_log_prob[:, y] = sum(softplus(F[:, :, y])) + rbm.d[y]
-
+        # o2: class_log_prob[:, y] = np.sum(softplus(F[:, :, y]), axis=0) + rbm.d[y]
     # normalize probabilities
     class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
     # :o class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))

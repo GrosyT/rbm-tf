@@ -10,7 +10,7 @@ import types
 def init_weights(m, n, opts):  # todo complete weight init func in cRBM case
     if opts.init_type == "gauss":
         # initfunc = lambda m, n : np.random.normal(0, 0.1,(m, n))
-        initfunc = np.random.normal(0, 1, (m, n))
+        initfunc = np.random.normal(0, 0.01, (m, n))
         return initfunc
     elif opts.init_type == "crbm":
         # initialize weights from uniform distribution. As described in
