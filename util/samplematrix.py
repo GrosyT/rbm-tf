@@ -26,8 +26,11 @@ def samplematrix(x):
     r = np.random.uniform(0, 1, (n_samples, 1))
     x_c = np.cumsum(x, 1)
     larger = x_c >= r
-    idx = max(larger, [], 1)
+    idx = np.argmax(larger,axis=1)
 
-    lin_idx = np.ravel_multi_index(np.transpose(n_samples) ,x.shape)
-    sample[lin_idx] = 1
+    lin_idx = np.ravel_multi_index((np.arange(n_samples), idx), dims=x.shape, order='C')
+    np.random.shuffle(lin_idx)
+    # lin_idx = np.ravel_multi_index(x.shape, dims=(np.reshape((np.arange(100,dtype=int),(100,1)), idx)), order='C')
+    # lin_idx =
+    sample[np.unravel_index(lin_idx, sample.shape, 'C')] = 1
     return sample

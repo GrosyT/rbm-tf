@@ -131,7 +131,7 @@ def dbncreateopts():           # !!!!!tab
         semisup_type = "rbmhybrid"
         err_func = "accuracy"
         dropout_hidden = 0
-        init_type = 'gauss'
+        init_type = 'crbm'  # other options: "gauss" , "crbm"
         outfile = []
 
         @property

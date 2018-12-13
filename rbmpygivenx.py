@@ -46,8 +46,8 @@ def rbmpygivenx(rbm, x, train_or_test):
     #  o: class_prob = np.exp(class_log_prob - class_log_prob_amax)
     # class_log_prob - (np.amax(class_log_prob, 1))
     # o: class_prob = np.exp(np.subtract(class_log_prob, class_log_prob_amax))
-
-    class_prob = np.divide(class_prob, sum(class_prob, 1))
+    class_prob_sum = np.reshape(np.sum(class_prob, axis=1),(class_prob.shape[0],1))
+    class_prob = np.divide(class_prob, class_prob_sum)
 
     return class_prob, F
 

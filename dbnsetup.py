@@ -7,6 +7,7 @@ import numpy as np
 import types
 
 
+# create weight initialization function
 def init_weights(m, n, opts):  # todo complete weight init func in cRBM case
     if opts.init_type == "gauss":
         # initfunc = lambda m, n : np.random.normal(0, 0.1,(m, n))
