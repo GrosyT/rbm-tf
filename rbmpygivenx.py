@@ -4,6 +4,7 @@ import math
 sys.path.insert(0, './util/')
 from softplus import softplus
 
+
 def rbmpygivenx(rbm, x, train_or_test):
     # RBMPYGIVENX calculates class probabilities [p(y|x)]
     # internal function

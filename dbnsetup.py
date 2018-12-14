@@ -5,6 +5,8 @@
 # %         opts : a struct with options see dbncreateopts
 import numpy as np
 import types
+from rbmupclassrbm import rbmupclassrbm
+from rbmdownyclassrbm import rbmdownyclassrbm
 
 
 # create weight initialization function
@@ -213,7 +215,7 @@ def dbnsetup(sizes, x_train, opts):
 
         else:  # for non-top layers use generative training
             rbmlist[u].classRBM = 0
-            rbmlist[u].train_func = "rbmgenerative"
+            rbmlist[u].train_func = rbmgenerative
             rbmlist[u].U = []
             rbmlist[u].vU = []
             rbmlist[u].d = []
@@ -232,12 +234,12 @@ def dbnsetup(sizes, x_train, opts):
         # for non class RBM's rbmy should return empty. To avoid if statement
         # create a function returning empty otherwise use rbmdowny
 
-        rbmlist[u].rand = lambda rand: np.random.random()  # todo: replicate matlab function handle calls better
+        rbmlist[u].rand = np.random.rand  # todo: replicate matlab function handle calls better
         rbmlist[u].zeros = lambda zeros: np.zeros(0)
 
         if rbmlist[u].classRBM:  # todo: implement these as separate functions (based on matlab func. handle or .m file)
-            rbmlist[u].rbmdowny = "rbmdownyclassrbm"
-            rbmlist[u].rbmup = "rbmupclassrbm"
+            rbmlist[u].rbmdowny = rbmdownyclassrbm
+            rbmlist[u].rbmup = rbmupclassrbm
         else:
             rbmlist[u].rbmdowny = "rbmdownynotclass"
             rbmlist[u].rbmup = "rbmdupnotclassrbm"

@@ -48,7 +48,7 @@ def rbmtrain(rbm, x_train, opts):
     chainsy = []
     best_str = ''
 
-    if rbm.train_func == 'rbmsemisuplearn':
+    if rbm.train_func == rbmsemisuplearn:
         semisup = 1
         l_semisup = 0
         n_samples_semisup = opts.x_semisup.shape[0]
@@ -68,20 +68,21 @@ def rbmtrain(rbm, x_train, opts):
         rbm.curLR = rbm.learningrate(opts.t_learningrate[0], rbm.curMomentum)
         rbm.curCDn = rbm.cdn(epoch)
 
-        for l in range(int(numbatches)):
-            v0 = extractminibatch(kk, l, opts.batchsize, x_train, opts)
+        for l in range(int(numbatches)):            # todo: check extractminibatch
+            l_2 = l + 1
+            v0 = extractminibatch(kk, l_2, opts.batchsize, x_train, opts)  # changed l cycle variable for correct index
             if rbm.classRBM == 1:
                 ey = extractminibatch(kk, l, opts.batchsize, opts.y_train, opts)
             else:
                 ey = []
 
-            # iterare over semisup batches
+            # iterate over semisup batches
             if semisup == 1:
 
                 l_semisup = l_semisup + 1  # increment semisup batch
                 if l_semisup > numbatches_semisup:
                     l_semisup = 1
-                opts.x_semisup_batch = extractminibatch(kk_semisup, numbatches_semisup, opts.batchsize,
+                opts.x_semisup_batch = extractminibatch(kk_semisup, l_semisup, opts.batchsize,
                                                         opts.x_semisup, opts)
             if opts.traintype == 'PCD' and init_chains == 1:
                 # init chains in first epoch if Persistent contrastive divergence

@@ -1,4 +1,5 @@
 from rbmpygivenx import rbmpygivenx
+from rbmgenerative import rbmgenerative
 import sys
 sys.path.insert(0, './util/')
 from samplematrix import samplematrix
@@ -75,3 +76,6 @@ def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
     # sample p(y | x)
     ey_semisup, _ = rbmpygivenx(rbm, x, 'train')
     ey_semisup = samplematrix(ey_semisup)
+
+    [grads_semisup, _, chains_semisup, chainsy_semisup] = rbmgenerative(rbm, opts.x_semisup_batch, ey_semisup, opts,
+                                                                        chains_semisup, chainsy_semisup)
