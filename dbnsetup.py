@@ -118,7 +118,7 @@ def dbnsetup(sizes, x_train, opts):
                 self.rbmdowny = None
                 self.rbmup = None
 
-            def create_func(self, val):                         # todo: possible bug with matlab function handle
+            def create_func(val):                         # todo: possible bug with matlab function handle
                 # takes a scalar val or function handle and returns a function returning val if val is not a function
                 if isinstance(val, types.FunctionType):
                     ret = val
@@ -149,7 +149,8 @@ def dbnsetup(sizes, x_train, opts):
 
         rbmlist.append(Dbn.Rbm())
         # Dbn.Rbm.cdn = opts.cdn
-        rbmlist[u].cdn = Dbn.Rbm.create_func(Dbn.Rbm.create_func, opts.cdn)
+        rbmlist[u].cdn = create_func(opts.cdn)
+        # :o rbmlist[u].cdn = Dbn.Rbm.create_func(Dbn.Rbm.create_func, opts.cdn)
         # rbmlist[u].cdn = create_func(opts)   not sure about# t0d0: create function cdn matlab dbnsetup.m line 41 | 168
         # print("list 0 index: ", rbmlist[0].cdn)
         # rbmlist.append(Dbn.Rbm)
@@ -255,3 +256,12 @@ def dbnsetup(sizes, x_train, opts):
     dbn = Dbn()
     # print("dbn = Dbn at dbnsetup: ",dbn)
     return rbmlist[:], dbn, dbn_sizes  # TODO: pass sizes to dbn class better
+
+
+def create_func(val):  # todo: possible bug with matlab function handle
+    # takes a scalar val or function handle and returns a function returning val if val is not a function
+    if isinstance(val, types.FunctionType):
+        ret = val
+    else:
+        ret = lambda epoch: val
+    return ret

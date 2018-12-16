@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, './util/')
 from sigm import sigm
 from sigmrnd import sigmrnd
+from rbmdownx import rbmdownx
 
 #RBMGENERATIVE calculate weight updates for generative RBM
 # SEE sections contrastive divergence(CD) and persistent contrastive
@@ -88,6 +89,14 @@ def rbmgenerative(rbm, v0, ey, opts, chains, chainsy):
         hid = h0_rnd
     elif train_type == "PCD":
         hid = up(rbm, chains, chainsy, sigmrnd)
+    for n in range(rbm.curCDn - 1):
+        visx = rbmdownx(rbm, hid, sigmrnd)
+        visy = rbm.rbmdowny(rbm, hid)
+        hid = up(rbm, visx, visy, sigmrnd)
+
+    # in last up/down dont sample hidden because it introduces sampling noise
+
+
 
 
 

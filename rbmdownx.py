@@ -1,12 +1,15 @@
 import numpy as np
-##RBMDOWNYCLASSRBM calculates p(v_label = 1 | h) for label units in class RBM
+
+
+# RBMDOWNX calculates p(v = 1 | h) for non label units
 #
 # INPUTS
 #   rbm           : A rbm struct
 #   hid_act       : the activation of the hidden layer
+#   act_func      : the activation function, @sigm | @sigmrnd
 #
 # OUTPUTS
-#   act_vis_y : The activation of the class label visible units
+#   act_vis_x     : The activation of the x visible units
 #
 # see "A practical guide to training restricted Boltzmann machines" eqn 8
 # act is the activation function. currently either sigm or sigmrnd
@@ -20,14 +23,8 @@ import numpy as np
 #    b  : bias of visible layer  [ #vis       x 1]
 #    c  : bias of hidden layer   [ #hid       x 1]
 #    d  : bias of label layer    [ #n_classes x 1]
-#
-# See also RBMDOWNX RBMUP SAMPLEMATRIX
 
-
-def rbmdownyclassrbm(rbm, hid_act):
-    hid_act_rbm_U = np.matmul(hid_act, rbm.U)
-    rbm_d_add_hid_act_rbm_U = np.add(np.transpose(rbm.d), hid_act_rbm_U)
-    exp_rbm_d_add_hid_act_rbm_U = np.exp(rbm_d_add_hid_act_rbm_U)
-    sum_act_vis_y = np.sum(exp_rbm_d_add_hid_act_rbm_U, axis=0)
-    act_vis_y = exp_rbm_d_add_hid_act_rbm_U / sum_act_vis_y
-    return act_vis_y
+def rbmdownx(rbm, hid_act, act_func):
+    hid_act_add_rbm_W = np.matmul(hid_act, rbm.W)
+    act_vis_x = act_func(np.add(np.transpose(rbm.b), hid_act_add_rbm_W))
+    return act_vis_x

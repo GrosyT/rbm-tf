@@ -5,6 +5,8 @@ import statistics
 sys.path.insert(0, './util/')
 from extractminibatch import extractminibatch
 from rbmsemisuplearn import rbmsemisuplearn
+from dbnsetup import create_func
+
 
 
 
