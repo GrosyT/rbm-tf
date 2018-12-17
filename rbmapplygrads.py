@@ -44,7 +44,27 @@ def rbmapplygrads(rbm, grads, x, ey, epoch):
 
     # update weights and momentum of regular weights
     rbm.vW = rbm.curMomentum * rbm.vW + rbm.curLR * dw
-    rbm.vc = rbm.curMomentum * rbm.vc + rbm.curLR * dc
-    if not(not db):
+    rbm.vc = rbm.curMomentum * rbm.vc + rbm.curLR * np.reshape(dc,rbm.vc.shape)
+    if not(not db.any()):
         rbm.vb = rbm.curMomentum * rbm.vb + rbm.curLR * db
+
+    rbm.W = rbm.W + rbm.vW
+    rbm.b = rbm.b + rbm.vb
+    rbm.c = rbm.c + rbm.vc
+
+    # if classRBM update weights and momentum of U and d
+    if rbm.classRBM == 1:
+        rbm.vU = rbm.curMomentum * rbm.vU + rbm.curLR * du
+        rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.reshape(dd,rbm.vd.shape)
+        rbm.U = rbm.U + rbm.vU
+        rbm.d = rbm.d + rbm.vd
+
+    # l2 norm constraint
+    if rbm.L2 > 0:
+        #rbm.W =
+        pass # todo: implement l2 norm
+
+    return rbm
+
+
 

@@ -6,6 +6,7 @@ sys.path.insert(0, './util/')
 from extractminibatch import extractminibatch
 from rbmsemisuplearn import rbmsemisuplearn
 from rbmapplygrads import rbmapplygrads
+from rbmmonitor import rbmmonitor
 from dbnsetup import create_func
 
 
@@ -112,7 +113,13 @@ def rbmtrain(rbm, x_train, opts):
 
             # update weights, LR,decay and momentum
             rbm = rbmapplygrads(rbm, grads, v0, ey, epoch)
+        if len(rbm.error) == 0:
+            rbm.error.append(err / numbatches)
+        else:
+            rbm.error[-1] = err / numbatches
 
+        # calc train\val performance.
+        perf, rbm = rbmmonitor(rbm, x_train, opts, x_samples, val_samples, epoch)
 
 
 

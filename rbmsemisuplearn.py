@@ -1,4 +1,5 @@
 from rbmpygivenx import rbmpygivenx
+import numpy as np
 from rbmgenerative import rbmgenerative
 from rbmdiscriminative import rbmdiscriminative
 import sys
@@ -94,7 +95,8 @@ def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
 
     grads = {
         'dw': grads_type['dw'] + opts.semisup_beta * grads_semisup['dw'],
-        'db': grads_type['db'] + opts.semisup_beta * grads_semisup['db'],
+        'db': grads_type['db'] + opts.semisup_beta * np.reshape(grads_semisup['db'], (grads_type['db'].shape)),
+        # O:        'db': grads_type['db'] + opts.semisup_beta * grads_semisup['db'],
         'dc': grads_type['dc'] + opts.semisup_beta * grads_semisup['dc'],
         'du': grads_type['du'] + opts.semisup_beta * grads_semisup['du'],
         'dd': grads_type['dd'] + opts.semisup_beta * grads_semisup['dd'],
