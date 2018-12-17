@@ -1,11 +1,10 @@
 from rbmpygivenx import rbmpygivenx
 from rbmgenerative import rbmgenerative
+from rbmdiscriminative import rbmdiscriminative
 import sys
 sys.path.insert(0, './util/')
 from samplematrix import samplematrix
 
-
-def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
 # rbmsemisuplearn semisupervised learning function
 # Combines unsupervised training objective with either
 # hybrid, discriminative or generative trainign using the formula:
@@ -62,6 +61,9 @@ def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
 
 # split chains don't if it matters that i use the correct chains??
 
+
+def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
+
     if opts.traintype == 'PCD':
         chains_semisup = chains_comb[0:opts.batchsize,:]
         chains_type = chains_comb[opts.batchsize+2:,:]
@@ -77,5 +79,31 @@ def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
     ey_semisup, _ = rbmpygivenx(rbm, x, 'train')
     ey_semisup = samplematrix(ey_semisup)
 
-    [grads_semisup, _, chains_semisup, chainsy_semisup] = rbmgenerative(rbm, opts.x_semisup_batch, ey_semisup, opts,
-                                                                        chains_semisup, chainsy_semisup)
+    grads_semisup, _, chains_semisup, chainsy_semisup = rbmgenerative(rbm, opts.x_semisup_batch, ey_semisup, opts, chains_semisup, chainsy_semisup)
+
+#:o     [grads_semisup, _, chains_semisup, chainsy_semisup] = rbmgenerative(rbm, opts.x_semisup_batch, ey_semisup, opts,
+#                                                                        chains_semisup, chainsy_semisup)
+#
+    # combine the generative unsupervised training with either @rbmhybrid,
+    # @rbmgenerative or @rbmdiscriminative
+    # note here we have labels
+    grads_type, _, chains_type, chainsy_type = opts.semisup_type(rbm, x, ey, opts, chains_type, chainsy_type)
+
+    chains_comb = [chains_semisup, chains_type]
+    chainsy_comb = [chainsy_semisup, chainsy_type]
+
+    grads = {
+        'dw': grads_type['dw'] + opts.semisup_beta * grads_semisup['dw'],
+        'db': grads_type['db'] + opts.semisup_beta * grads_semisup['db'],
+        'dc': grads_type['dc'] + opts.semisup_beta * grads_semisup['dc'],
+        'du': grads_type['du'] + opts.semisup_beta * grads_semisup['du'],
+        'dd': grads_type['dd'] + opts.semisup_beta * grads_semisup['dd'],
+    }
+
+    curr_err = 0
+
+    return grads, curr_err, chains_comb, chainsy_comb
+
+
+
+

@@ -6,6 +6,7 @@ from dbncheckopts import dbncheckopts
 from dbnsetup import dbnsetup
 from dbntrain import dbntrain
 from rbmsemisuplearn import rbmsemisuplearn
+from rbmdiscriminative import rbmdiscriminative
 
 # biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 
@@ -52,6 +53,7 @@ dbncheckopts(opts,valid_fields)
 # opts.t_learningrate = [0.1,0.5]
 # print("learningrate multiple elements: ", opts.t_learningrate)
 opts.train_function = rbmsemisuplearn                                      # todo : 'train_func' correction in opts
+opts.semisup_type = rbmdiscriminative
 
 #dbnsetup(sizes,x_train,opts)
 #rbmlist = []

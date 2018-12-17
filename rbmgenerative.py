@@ -1,3 +1,4 @@
+import numpy as np
 import sys
 sys.path.insert(0, './util/')
 from sigm import sigm
@@ -102,6 +103,66 @@ def rbmgenerative(rbm, v0, ey, opts, chains, chainsy):
     vky = samplematrix(vky)
 
     hk = up(rbm, vkx, vky, sigm)
+
+    # debugging
+    # if "debug" or "var" and debug == 1:
+
+    # update the state of the persistent chains if PCD othwise return empty chains
+    if train_type == "PCD":
+        chains = vkx
+        chainsy = vky
+    elif train_type == "CD":
+        chains = []
+        chainsy = []
+
+    ## calculate gradients
+    # h0  : postivie statistic for hidden units
+    # v0  : positive statistic for the visible units
+    # vk  : negative stat for visible units
+    # vky : negative stat for label visible units
+    # hk  : negative stat for hidden units
+
+    # calculate the positive and negative gradient / aka positive and neg phase
+    positive_phase = np.matmul(np.transpose(h0), v0)
+    negative_phase = np.matmul(np.transpose(hk), vkx)
+
+    dw = positive_phase - negative_phase
+    db = np.sum(v0 - vkx, axis=0)
+    dc = np.sum(h0 - hk, axis=0)
+
+    # normalize by minibatch size
+    dw = dw / opts.batchsize
+    db = db / opts.batchsize
+    dc = dc / opts.batchsize
+
+    # for hinton DBN update bias and variables for du and dd
+    if rbm.classRBM == 1:
+        positive_phasey = np.matmul(np.transpose(h0), ey)
+        negative_phasey = np.matmul(np.transpose(hk), vky)
+        du = positive_phasey - negative_phasey
+        dd = np.transpose(np.sum(ey - vky, axis=0))
+        du = du / opts.batchsize
+        dd = dd / opts.batchsize
+    else:
+        # return zero gradients for non cRBM's
+        du = rbm.zeros(rbm.U.shape)
+        dd = rbm.zeros(rbm.d.shape)
+
+    curr_err = np.sum((v0 - vkx)**2) / opts.batchsize  # :o np.sum(np.sum((v0 - vkx)**2, axis=0)) / opts.batchsize
+
+    grads = {
+        "dw": dw,
+        "db": db,
+        "dc": dc,
+        "du": du,
+        "dd": dd,
+        }
+
+    a = 5
+
+    return grads, curr_err, chains, chainsy
+
+
 
 
 

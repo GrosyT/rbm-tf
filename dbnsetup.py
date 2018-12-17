@@ -236,7 +236,7 @@ def dbnsetup(sizes, x_train, opts):
         # create a function returning empty otherwise use rbmdowny
 
         rbmlist[u].rand = np.random.rand  # todo: replicate matlab function handle calls better
-        rbmlist[u].zeros = lambda zeros: np.zeros(0)
+        rbmlist[u].zeros = np.zeros  # o: rbmlist[u].zeros = lambda zeros: np.zeros(zeros) # todo: check np.zeros func.
 
         if rbmlist[u].classRBM:  # todo: implement these as separate functions (based on matlab func. handle or .m file)
             rbmlist[u].rbmdowny = rbmdownyclassrbm

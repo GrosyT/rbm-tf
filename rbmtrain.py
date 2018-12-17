@@ -5,6 +5,7 @@ import statistics
 sys.path.insert(0, './util/')
 from extractminibatch import extractminibatch
 from rbmsemisuplearn import rbmsemisuplearn
+from rbmapplygrads import rbmapplygrads
 from dbnsetup import create_func
 
 
@@ -74,7 +75,7 @@ def rbmtrain(rbm, x_train, opts):
             l_2 = l + 1
             v0 = extractminibatch(kk, l_2, opts.batchsize, x_train, opts)  # changed l cycle variable for correct index
             if rbm.classRBM == 1:
-                ey = extractminibatch(kk, l, opts.batchsize, opts.y_train, opts)
+                ey = extractminibatch(kk, l_2, opts.batchsize, opts.y_train, opts)
             else:
                 ey = []
 
@@ -102,12 +103,15 @@ def rbmtrain(rbm, x_train, opts):
                 init_chains = 0
 
             if rbm.dropout_hidden > 0:
-                rbm.hidden_mask = (rbm.rand(n_hidden.shape[0],opts.batchsize.shape[0])) >   rbm.dropout_hidden
+                rbm.hidden_mask = (rbm.rand(n_hidden.shape[0],opts.batchsize.shape[0])) > rbm.dropout_hidden
 
             # calculate rbm gradients
             grads, c_err, chains, chainsy = rbm.train_func(rbm, v0, ey, opts, chains, chainsy)
 
+            err = err + c_err
 
+            # update weights, LR,decay and momentum
+            rbm = rbmapplygrads(rbm, grads, v0, ey, epoch)
 
 
 
