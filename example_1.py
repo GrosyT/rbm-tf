@@ -55,6 +55,9 @@ dbncheckopts(opts,valid_fields)
 opts.train_function = rbmsemisuplearn                                      # todo : 'train_func' correction in opts
 opts.semisup_type = rbmdiscriminative
 
+opts.momentum = 0.001
+opts.learningrate = 0.05
+
 #dbnsetup(sizes,x_train,opts)
 #rbmlist = []
 rbmlist, dbn, dbn_sizes = dbnsetup(sizes, x_train, opts)

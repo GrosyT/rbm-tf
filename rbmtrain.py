@@ -67,7 +67,7 @@ def rbmtrain(rbm, x_train, opts):
         err = 0
 
         # in each epoch update rbm parameters
-        rbm.curMomentum = rbm.momentum(opts.t_momentum[0])  # rbm.momentum(epoch)
+        rbm.curMomentum = rbm.momentum(epoch)  # rbm.momentum(epoch)
         rbm.curLR = rbm.learningrate(opts.t_learningrate[0], rbm.curMomentum)
         rbm.curCDn = rbm.cdn(epoch)
 

@@ -96,13 +96,19 @@ def dbncreateopts():           # !!!!!tab
         learningrate_lambda = lambda t, momentum: opts.eps * opts.f ** t * (1 - momentum)
         momentum_lambda = lambda t: opts.p_i * (1 - t / opts.T) + (t / opts.T) if t < opts.T else opts.p_f
 
-        def momentum_func(self,t):
+        def momentum_func(self, t):
             momentum = opts.p_i * (1 - t / opts.T) + (t / opts.T) if t < opts.T else opts.p_f
+            if isinstance(opts.momentum, float) or isinstance(opts.momentum, int):
+                momentum = opts.momentum
             return momentum
+        momentum = momentum_func
 
         def learningrate_func(self, t, momentum):
             learningrate = opts.eps * opts.f ** t * (1 - momentum)
+            if isinstance(opts.learningrate, float) or isinstance(opts.learningrate, int):
+                learningrate = opts.learningrate
             return learningrate
+        learningrate = learningrate_func
 
         L1 = 0.00
         L2 = 0
