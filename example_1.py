@@ -7,6 +7,7 @@ from dbnsetup import dbnsetup
 from dbntrain import dbntrain
 from rbmsemisuplearn import rbmsemisuplearn
 from rbmdiscriminative import rbmdiscriminative
+from dbnpredict import dbnpredict
 
 # biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 
@@ -18,15 +19,18 @@ sizes = [50]
 
 opts, valid_fields = dbncreateopts()
 # print("opts: ", opts)
-
+opts.numepochs = 2
 opts.batchsize = 100
 # print(sio.whosmat(r"D:\python_project\wip\data_labeled_for_py_1_2.mat"))
 print(sio.whosmat("./data/data_labeled_6.mat"))
 opts.y_train = biomag_labeled_1["y_train"]
 opts.x_train = biomag_labeled_1["x_train"]
 opts.x_val = biomag_labeled_1["x_val"]
+opts.y_val = biomag_labeled_1["y_val"]
 opts.x_semisup = biomag_unlabeled_1["unlabeled_data_5000_set_001"]
 x_train = biomag_labeled_1["x_train"]
+x_test = biomag_labeled_1["test_x"]
+y_test = biomag_labeled_1["test_y"]
 # print("opts_ytrain: ",opts.y_train.shape)
 # print("opts_learningrate: ",opts.learningrate(opts.t_learningrate, opts.eps, /
 #  opts.f, opts.momentum(opts.t_momentum, opts.p_i, opts.T, opts.p_f)))
@@ -63,8 +67,15 @@ opts.learningrate = 0.05
 rbmlist, dbn, dbn_sizes = dbnsetup(sizes, x_train, opts)
 #print("rbmlist[u] at example_1: ", rbmlist[0])
 
-dbntrain(rbmlist[:], dbn, x_train, opts)
+dbn = dbntrain(rbmlist[:], dbn, x_train, opts)
 # Dbn = dbnsetup(sizes, x_train, opts)
+
+
+pred_y = dbnpredict(dbn, x_test)
+result = pred_y == np.reshape(y_test,(y_test.shape[0]))
+accuracy_final = np.sum(result) / x_test.shape[0] * 100
+print("Accuracy on test: ",accuracy_final,"%")
+
 
 #                      Dbn instance print----------------------------------------------------------------------
 # print(Dbn)

@@ -2,6 +2,8 @@ import sys
 sys.path.insert(0, './util/')
 from chunkify import chunkify
 from inspect import signature
+from rbmpygivenx import rbmpygivenx
+import numpy as np
 
 
 # RBMCLASSPROBS calculate class probabilities for a classification RBM
@@ -51,5 +53,16 @@ def rbmclassprobs(rbm, x, batchsize):
         assert numbatches%1 == 0, "numbatches not integer"
         #
         chunks = chunkify(batchsize, x)
+    else:
+        chunks = chunkify(n_samples, x)
 
-        pass
+    class_prob_res = []
+    class_prob_res = np.empty((0, rbm.U.shape[1])) #np.array(class_prob_res)
+    # :O class_prob_res = np.empty((batchsize,rbm.U.shape[1]))
+    for i in range(len(chunks)):
+        minibatch = x[chunks[i]['start']:chunks[i]['end'],:]
+        class_prob, _ = rbmpygivenx(rbm, minibatch, 'test')
+        class_prob_res = np.append(class_prob_res, class_prob, axis=0)
+        # class_prob_res = np.concatenate((class_prob_res, class_prob), axis=0)
+
+    return class_prob_res

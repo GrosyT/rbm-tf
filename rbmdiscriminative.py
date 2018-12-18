@@ -1,8 +1,8 @@
 from rbmpygivenx import rbmpygivenx
-from predict import predict
 import sys
 import numpy as np
 sys.path.insert(0, './util/')
+from predict import predict
 from samplematrix import samplematrix
 from sigm import sigm
 # RBMDISCRIMINATIVE calculate weight updates for discriminative RBM

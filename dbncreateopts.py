@@ -1,4 +1,7 @@
 from rbmgenerative import rbmgenerative
+import sys
+sys.path.insert(0, './util/')
+from accuracy import accuracy
 #def dbncreateopts():
 
 # %DBNCREATEOPTS creates a valid Opts struct
@@ -136,7 +139,7 @@ def dbncreateopts():           # !!!!!tab
         hybrid_alpha = 0.5
         semisup_beta = 0.1
         semisup_type = "rbmhybrid"
-        err_func = "accuracy"
+        err_func = accuracy
         dropout_hidden = 0
         init_type = 'crbm'  # other options: "gauss" , "crbm"
         outfile = []

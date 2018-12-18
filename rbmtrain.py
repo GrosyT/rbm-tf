@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import scipy.io as sio
 import sys
 import statistics
 sys.path.insert(0, './util/')
@@ -7,6 +8,7 @@ from extractminibatch import extractminibatch
 from rbmsemisuplearn import rbmsemisuplearn
 from rbmapplygrads import rbmapplygrads
 from rbmmonitor import rbmmonitor
+from rbmearlystopping import rbmearlystopping
 from dbnsetup import create_func
 
 
@@ -120,6 +122,24 @@ def rbmtrain(rbm, x_train, opts):
 
         # calc train\val performance.
         perf, rbm = rbmmonitor(rbm, x_train, opts, x_samples, val_samples, epoch)
+        earlystop = rbmearlystopping(rbm, opts, earlystop, epoch)
+
+        # display output
+        epochnr = [' Epoch ', str(epoch), '/', str(opts.numepochs), '.']
+        avg_err = [' Avg. recon. err: ', str(err / numbatches)]
+        lr_mom = ['LR: ', str(rbm.curLR), '. Mom.: ', str(rbm.curMomentum)]
+        print(epochnr, avg_err, lr_mom)
+
+        if opts.outfile:
+            if opts.early_stopping:
+                best_rbm = earlystop["best_rbm"]
+                sio.savemat('rbm', best_rbm)
+                del best_rbm
+            else:
+                sio.savemat('rbm', rbm)
+
+
+
 
 
 

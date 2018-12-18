@@ -1,4 +1,7 @@
 from rbmtrain import rbmtrain
+import sys
+sys.path.insert(0, './util/')
+from sigm import sigm
 
 # function dbn = dbntrain(dbn, x_train, opts)
 # %%DBNTRAIN train a DBN by stacking RBM's
@@ -33,7 +36,29 @@ def dbntrain(rbmlist, dbn, x_train, opts):
 
     # matlab-szerű ötlet, külön kimenti az rbm-struktúrát. Abból is az elsőre külön meghívva a training-et.
     rbm = rbmlist[0]
-    rbmlist = rbmtrain(rbm, x_train, opts)
+    rbm = rbmtrain(rbm, x_train, opts) # :o rbmlist = rbmtrain(rbm, x_train, opts)
+    rbmlist[0] = rbm
+
+    for i in range(1, n_rbm):
+        if rbmlist[i].classRBM == 1 and n_rbm == i:
+            ye = opts.y_train
+        else:
+            ye = []
+
+        print("\n",aline,"\n","Training RBM ", i, "\n", aline,)
+        x_train = rbmlist[i-1].rbmup(rbmlist[i-1], x_train, ye, sigm)
+
+        if opts.x_val.any():
+            opts.x_val = rbmlist[i-1].rbmup(rbmlist[i-1], opts.x_val, ye, sigm)
+
+        rbm = rbmlist[i]
+        rbm = training(rbm, x_train, opts)
+        rbmlist[i] = rbm
+
+    return rbmlist
+
+
+
 
 
     # rbmtrain - dbntrain v1.
@@ -45,5 +70,3 @@ def dbntrain(rbmlist, dbn, x_train, opts):
     # rbmlist[0].d = 5
     # print(rbmlist[0].d)
     # print("rbmlist[0].cdn at dbntrain: ",rbmlist[0].cdn)
-
-    pass
