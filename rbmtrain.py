@@ -118,17 +118,27 @@ def rbmtrain(rbm, x_train, opts):
         if len(rbm.error) == 0:
             rbm.error.append(err / numbatches)
         else:
-            rbm.error[-1] = err / numbatches
+            rbm.error.append(err / numbatches)
+            #  O: rbm.error[-1] = err / numbatches
 
         # calc train\val performance.
         perf, rbm = rbmmonitor(rbm, x_train, opts, x_samples, val_samples, epoch)
         earlystop = rbmearlystopping(rbm, opts, earlystop, epoch)
 
+        # stop training?
+        if rbm.early_stopping and earlystop["patience"] < 0:
+            print("No more Patience. Returning best RBM")
+            earlystop["best_rbm"].val_error = rbm.val_error
+            earlystop["best_rbm"].train_error = rbm.train_error
+            earlystop["best_rbm"].error = rbm.error
+            rbm = earlystop["best_rbm"]
+            break
+
         # display output
-        epochnr = [' Epoch ', str(epoch), '/', str(opts.numepochs), '.']
-        avg_err = [' Avg. recon. err: ', str(err / numbatches)]
-        lr_mom = ['LR: ', str(rbm.curLR), '. Mom.: ', str(rbm.curMomentum)]
-        print(epochnr, avg_err, lr_mom)
+        epochnr = " Epoch %s/%s." % (str(epoch + 1), str(opts.numepochs))
+        avg_err = ' Avg. recon. err: ', str(err / numbatches)
+        lr_mom = 'LR: ', str(rbm.curLR), '. Mom.: ', str(rbm.curMomentum)
+        print(epochnr, avg_err, lr_mom, perf, earlystop["best_str"])
 
         if opts.outfile:
             if opts.early_stopping:

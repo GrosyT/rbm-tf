@@ -15,7 +15,7 @@ def rbmpygivenx(rbm, x, train_or_test):
     n_samples = x.shape[0]
 
     cwx = np.matmul(rbm.W, np.transpose(x))
-    cwx = np.add(np.reshape(rbm.c, (50, 1)), cwx)
+    cwx = np.add(np.reshape(rbm.c, (rbm.c.shape[0], 1)), cwx)
 
 
 
@@ -27,7 +27,7 @@ def rbmpygivenx(rbm, x, train_or_test):
         cwx * rbm.hidden_mask
 
     # rbm.U = rbm.U[:,None,:]
-    rbm.U2 = np.reshape(rbm.U,(50, 1, 12))  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
+    rbm.U2 = np.reshape(rbm.U,(rbm.U.shape[0], 1, 12))  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
 
     F = rbm.U2 + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
 
@@ -43,7 +43,7 @@ def rbmpygivenx(rbm, x, train_or_test):
     if class_log_prob.shape[0] == 1:
         class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (1, 1))
     else:
-        class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
+        class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (class_log_prob.shape[0], 1))
     # :o class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
     # o2: class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
     class_prob = class_log_prob - class_log_prob_amax

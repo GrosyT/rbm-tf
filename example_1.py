@@ -15,12 +15,13 @@ from dbnpredict import dbnpredict
 biomag_labeled_1 = sio.loadmat("./data/data_labeled_6.mat")
 biomag_unlabeled_1 = sio.loadmat("./data/unlabeled_data_5000_set_001.mat")
 
-sizes = [50]
+sizes = [500]
 
 opts, valid_fields = dbncreateopts()
 # print("opts: ", opts)
-opts.numepochs = 2
-opts.batchsize = 100
+opts.numepochs = 50
+opts.patience = 10
+opts.batchsize = 10
 # print(sio.whosmat(r"D:\python_project\wip\data_labeled_for_py_1_2.mat"))
 print(sio.whosmat("./data/data_labeled_6.mat"))
 opts.y_train = biomag_labeled_1["y_train"]
@@ -59,8 +60,9 @@ dbncheckopts(opts,valid_fields)
 opts.train_function = rbmsemisuplearn                                      # todo : 'train_func' correction in opts
 opts.semisup_type = rbmdiscriminative
 
-opts.momentum = 0.001
-opts.learningrate = 0.05
+opts.learningrate = 0.1
+opts.momentum = 0.05
+
 
 #dbnsetup(sizes,x_train,opts)
 #rbmlist = []
@@ -72,10 +74,15 @@ dbn = dbntrain(rbmlist[:], dbn, x_train, opts)
 
 
 pred_y = dbnpredict(dbn, x_test)
+pred_y = pred_y + 1 # data labels encoded differently from python 0 starting index
 result = pred_y == np.reshape(y_test,(y_test.shape[0]))
 accuracy_final = np.sum(result) / x_test.shape[0] * 100
 print("Accuracy on test: ",accuracy_final,"%")
 
+
+np.savetxt('RBM_accuracy.txt', pred_y, fmt='%d')
+# with open('RBM_accuracy.txt', 'w') as f:
+#     f.write("Prediction Y: %d" % pred_y)
 
 #                      Dbn instance print----------------------------------------------------------------------
 # print(Dbn)

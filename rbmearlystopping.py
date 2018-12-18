@@ -29,5 +29,5 @@ def rbmearlystopping(rbm, opts, earlystop, epoch):
             earlystop['patience'] = rbm.patience
         else:
             earlystop['best_str'] = ""
-            earlystop['patience'] = earlystop.patience - 1
+            earlystop['patience'] = earlystop["patience"] - 1
     return earlystop

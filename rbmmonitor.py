@@ -38,12 +38,12 @@ def rbmmonitor(rbm, x, opts, x_samples, val_samples, epoch):
                 val_err, val_om = rbm.err_func(val_probs, opts.y_val)
 
                 rbm.val_error.append(val_err)
-                rbm.val_error_measures.append(val_err)
+                rbm.val_error_measures.append(val_om)
                 val_err = str(rbm.val_error[-1])
             else:
                 val_err = "NA"
 
-            perf = "'  | Tr: %5f - Val: %s'", rbm.train_error[-1], val_err
+            perf = "  | Tr: %5f - Val: %s" % (rbm.train_error[-1], val_err)
 
         # non class RBM calculate free energy ratio
         elif opts.x_val:

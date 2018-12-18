@@ -87,7 +87,7 @@ def rbmdiscriminative(rbm, x, ey, opts, chains, chainsy, debug=None):
 
         # dc
         dc_diff = np.subtract(np.sum(F_sigm[:, bin_idx, c], axis=1), np.sum(F_sigm_prob[:, :, c], axis=1))
-        dc = np.reshape(dc, (1, 50)) + np.transpose(dc_diff)
+        dc = np.reshape(dc, (1, dc.shape[0])) + np.transpose(dc_diff)
 
         # dd grad
         dd = np.transpose(np.sum(ey - p_y_given_x, axis=0))

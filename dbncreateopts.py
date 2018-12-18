@@ -118,7 +118,7 @@ def dbncreateopts():           # !!!!!tab
         L2norm = 0
         sparsity = 0
         classRBM = 1    #default matlab value = 0 and declared in example run code to be value 1
-        test_interval = 5
+        test_interval = 1
 
 
             # a = []
@@ -133,8 +133,8 @@ def dbncreateopts():           # !!!!!tab
         x_val = []
         y_val = []
         x_semisup = []
-        early_stopping = 0
-        patience = 5
+        early_stopping = 1
+        patience = 10
         train_function = rbmgenerative                    # other options: "rbmdiscriminative","semisup"
         hybrid_alpha = 0.5
         semisup_beta = 0.1

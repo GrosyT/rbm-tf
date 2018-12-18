@@ -29,6 +29,6 @@ def rbmdownyclassrbm(rbm, hid_act):
     rbm_d_add_hid_act_rbm_U = np.add(np.transpose(rbm.d), hid_act_rbm_U)
     exp_rbm_d_add_hid_act_rbm_U = np.exp(rbm_d_add_hid_act_rbm_U)
     sum_act_vis_y = np.sum(exp_rbm_d_add_hid_act_rbm_U, axis=1)
-    sum_act_vis_y = np.reshape(sum_act_vis_y, (100, 1))
+    sum_act_vis_y = np.reshape(sum_act_vis_y, (sum_act_vis_y.shape[0], 1))
     act_vis_y = exp_rbm_d_add_hid_act_rbm_U / sum_act_vis_y
     return act_vis_y
