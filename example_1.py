@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import genfromtxt
 import scipy.io as sio
 from dbncreateopts import dbncreateopts
 import dbncheckopts
@@ -8,12 +9,21 @@ from dbntrain import dbntrain
 from rbmsemisuplearn import rbmsemisuplearn
 from rbmdiscriminative import rbmdiscriminative
 from dbnpredict import dbnpredict
+import h5py
+
 
 # biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 
 
 biomag_labeled_1 = sio.loadmat("./data/data_labeled_6.mat")
 biomag_unlabeled_1 = sio.loadmat("./data/unlabeled_data_5000_set_001.mat")
+# biomag_unlabeled_1 = []
+# with h5py.File('./data/Biomag_unlabeled_3.mat', 'r') as f:
+#     biomag_unlabeled_1 = np.array(f["unlabeled_min_max_norm"])
+#     print(biomag_unlabeled_1.shape)
+#biomag_unlabeled_1 = f["unlabeled_min_max_norm"]
+#biomag_unlabeled_2 = sio.loadmat("./data/Biomag_unlabeled_3.mat")
+#biomag_unlabeled_2 = genfromtxt(r"I:\OneDrive - Szegedi Tudományegyetem\egyetem\tdk\program\unlabeled_mmn.mat", delimiter=',')
 
 sizes = [500]
 
@@ -21,7 +31,7 @@ opts, valid_fields = dbncreateopts()
 # print("opts: ", opts)
 opts.numepochs = 50
 opts.patience = 15
-opts.batchsize = 1
+opts.batchsize = 10
 
 opts.train_function = rbmsemisuplearn                                      # todo : 'train_func' correction in opts
 opts.semisup_type = rbmdiscriminative
@@ -41,6 +51,7 @@ opts.x_train = biomag_labeled_1["x_train"]
 opts.x_val = biomag_labeled_1["x_val"]
 opts.y_val = biomag_labeled_1["y_val"]
 opts.x_semisup = biomag_unlabeled_1["unlabeled_data_5000_set_001"]
+#print(biomag_unlabeled_1.shape) #.o["unlabeled_data_5000_set_001"]
 x_train = biomag_labeled_1["x_train"]
 x_test = biomag_labeled_1["test_x"]
 y_test = biomag_labeled_1["test_y"]

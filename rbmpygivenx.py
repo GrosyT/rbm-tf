@@ -27,9 +27,9 @@ def rbmpygivenx(rbm, x, train_or_test):
         cwx * rbm.hidden_mask
 
     # rbm.U = rbm.U[:,None,:]
-    rbm.U2 = np.reshape(rbm.U,(rbm.U.shape[0], 1, 12))  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
-
-    F = rbm.U2 + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
+    #rbm.U = rbm.U[:,None,:]  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
+        # :o np.reshape(rbm.U,(rbm.U.shape[0], 1, 12))
+    F = rbm.U[:,None,:] + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
 
     rbm.zeros = np.zeros((n_samples, n_classes))
     class_log_prob = rbm.zeros  # -o: class_log_prob = rbm.zeros[n_samples,n_classes]
