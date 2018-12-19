@@ -5,6 +5,7 @@
 # %         opts : a struct with options see dbncreateopts
 import numpy as np
 import types
+from rbmgenerative import rbmgenerative
 from rbmupclassrbm import rbmupclassrbm
 from rbmdownyclassrbm import rbmdownyclassrbm
 
