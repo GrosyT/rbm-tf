@@ -147,7 +147,8 @@ def rbmtrain(rbm, x_train, opts):
                 del best_rbm
             else:
                 sio.savemat('rbm', rbm)
-
+        if epoch == 15:
+            debug_var = 1
 
 
 

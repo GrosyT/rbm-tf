@@ -55,7 +55,8 @@ def rbmapplygrads(rbm, grads, x, ey, epoch):
     # if classRBM update weights and momentum of U and d
     if rbm.classRBM == 1:
         rbm.vU = rbm.curMomentum * rbm.vU + rbm.curLR * du
-        rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.transpose(dd)
+        rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.reshape(dd,(dd.shape[0],1))
+        # :o rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.transpose(dd) - shape bug with np.transpose(dd)
         rbm.U = rbm.U + rbm.vU
         rbm.d = rbm.d + rbm.vd
 
