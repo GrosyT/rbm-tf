@@ -8,6 +8,7 @@ from dbnsetup import dbnsetup
 from dbntrain import dbntrain
 from rbmsemisuplearn import rbmsemisuplearn
 from rbmdiscriminative import rbmdiscriminative
+from rbmgenerative import rbmgenerative
 from dbnpredict import dbnpredict
 import h5py
 
@@ -33,7 +34,7 @@ opts.numepochs = 50
 opts.patience = 15
 opts.batchsize = 10
 
-opts.train_function = rbmsemisuplearn                                      # todo : 'train_func' correction in opts
+opts.train_function = rbmgenerative                         # todo : 'train_func' correction in opts
 opts.semisup_type = rbmdiscriminative
 
 opts.learningrate = 0.05

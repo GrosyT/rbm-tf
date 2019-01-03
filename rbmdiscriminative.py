@@ -58,7 +58,7 @@ def rbmdiscriminative(rbm, x, ey, opts, chains, chainsy, debug=None):
     F_sigm = sigm(F)
     F_sigm_prob = np.zeros(F_sigm.shape)
     for c in range(n_classes):
-        F_sigm_prob[:,:,c] = np.multiply(F_sigm[:,:,c], np.transpose(p_y_given_x[:,c]))
+        F_sigm_prob[:, :, c] = np.multiply(F_sigm[:, :, c], np.transpose(p_y_given_x[:, c]))
         # O: F_sigm_prob[:,:,c] = np.matmul(F_sigm[:,:,c], np.transpose(p_y_given_x[:,c]))
 
     # init grads

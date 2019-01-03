@@ -39,6 +39,7 @@ def rbmpygivenx(rbm, x, train_or_test):
 
         # o: class_log_prob[:, y] = sum(softplus(F[:, :, y])) + rbm.d[y]
         # o2: class_log_prob[:, y] = np.sum(softplus(F[:, :, y]), axis=0) + rbm.d[y]
+
     # normalize probabilities
     if class_log_prob.shape[0] == 1:
         class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (1, 1))
@@ -46,11 +47,13 @@ def rbmpygivenx(rbm, x, train_or_test):
         class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (class_log_prob.shape[0], 1))
     # :o class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
     # o2: class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
+
     class_prob = class_log_prob - class_log_prob_amax
     class_prob = np.exp(class_prob)
     #  o: class_prob = np.exp(class_log_prob - class_log_prob_amax)
     # class_log_prob - (np.amax(class_log_prob, 1))
     # o: class_prob = np.exp(np.subtract(class_log_prob, class_log_prob_amax))
+
     class_prob_sum = np.reshape(np.sum(class_prob, axis=1),(class_prob.shape[0],1))
     class_prob = np.divide(class_prob, class_prob_sum)
 
