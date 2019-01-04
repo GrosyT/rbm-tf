@@ -26,8 +26,8 @@ opts.batchsize = 1
 opts.train_function = rbmsemisuplearn                                      # todo : 'train_func' correction in opts
 opts.semisup_type = rbmdiscriminative
 
-opts.learningrate = 0.1
-opts.momentum = 0.05
+opts.learningrate = 0.01
+opts.momentum = 0.005
 
 opts.semisup_beta = 0.1
 opts.traintype = "CD"
