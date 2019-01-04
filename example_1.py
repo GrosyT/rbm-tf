@@ -36,7 +36,7 @@ opts.numepochs = 50
 opts.patience = 15
 opts.batchsize = 10
 
-train_func_selector_var = 1
+train_func_selector_var = 3
 if train_func_selector_var == 0:
     opts.train_function = rbmgenerative                      # todo : 'train_func' correction in opts
 elif train_func_selector_var == 1:
