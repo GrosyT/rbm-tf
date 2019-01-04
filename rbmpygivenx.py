@@ -15,7 +15,7 @@ def rbmpygivenx(rbm, x, train_or_test):
     n_samples = x.shape[0]
 
     cwx = np.matmul(rbm.W, np.transpose(x))
-    cwx = np.add(np.reshape(rbm.c, (rbm.c.shape[0], 1)), cwx)
+    cwx = np.add(cwx, np.reshape(rbm.c, (rbm.c.shape[0], 1)))
 
 
 

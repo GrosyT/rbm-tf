@@ -87,23 +87,24 @@ def rbmdiscriminative(rbm, x, ey, opts, chains, chainsy, debug=None):
 
         # dc
         dc_diff = np.subtract(np.sum(F_sigm[:, bin_idx, c], axis=1), np.sum(F_sigm_prob[:, :, c], axis=1))
-        dc = np.reshape(dc, (1, dc.shape[0])) + np.transpose(dc_diff)
+        dc = dc + np.reshape(dc_diff,(dc_diff.shape[0],1))
+            # :o np.reshape(dc, (1, dc.shape[0])) + np.transpose(dc_diff)
 
         # dd grad
-        dd = np.transpose(np.sum(ey - p_y_given_x, axis=0))
+    dd = np.transpose(np.sum(ey - p_y_given_x, axis=0))
 
-        # create grads struct and scale grad by minibatch size.
-        grads = {
-            "dw": dw / opts.batchsize,
-            "db": np.zeros(rbm.b.shape),
-            "dc": dc / opts.batchsize,
-            "dd": dd / opts.batchsize,
-            "du": du / opts.batchsize,
-        }
+    # create grads struct and scale grad by minibatch size.
+    grads = {
+        "dw": dw / opts.batchsize,
+        "db": np.zeros(rbm.b.shape),
+        "dc": dc / opts.batchsize,
+        "dd": dd / opts.batchsize,
+        "du": du / opts.batchsize,
+    }
 
-        curr_err = 0
-        chains = []
-        chainsy = []
+    curr_err = 0
+    chains = []
+    chainsy = []
 
-        return grads, curr_err, chains, chainsy
+    return grads, curr_err, chains, chainsy
 

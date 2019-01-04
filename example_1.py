@@ -1,6 +1,8 @@
 import numpy as np
 from numpy import genfromtxt
 import scipy.io as sio
+
+import rbmsemisuplearn
 from dbncreateopts import dbncreateopts
 import dbncheckopts
 from dbncheckopts import dbncheckopts
@@ -34,8 +36,16 @@ opts.numepochs = 50
 opts.patience = 15
 opts.batchsize = 10
 
-opts.train_function = rbmgenerative                         # todo : 'train_func' correction in opts
+train_func_selector_var = 1
+if train_func_selector_var == 0:
+    opts.train_function = rbmgenerative                      # todo : 'train_func' correction in opts
+elif train_func_selector_var == 1:
+    opts.train_function = rbmdiscriminative
+else:
+    opts.train_function = rbmsemisuplearn
+
 opts.semisup_type = rbmdiscriminative
+
 
 opts.learningrate = 0.05
 opts.momentum = 0.001
