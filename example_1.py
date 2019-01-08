@@ -15,11 +15,12 @@ from dbnpredict import dbnpredict
 import h5py
 
 
-# biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
+
+
 
 
 biomag_labeled_1 = sio.loadmat("./data/data_labeled_6.mat")
-biomag_unlabeled_1 = sio.loadmat("./data/unlabeled_data_5000_set_001.mat")
+
 # biomag_unlabeled_1 = []
 # with h5py.File('./data/Biomag_unlabeled_3.mat', 'r') as f:
 #     biomag_unlabeled_1 = np.array(f["unlabeled_min_max_norm"])
@@ -36,6 +37,7 @@ opts.numepochs = 50
 opts.patience = 15
 opts.batchsize = 10
 
+# Select training mode:
 train_func_selector_var = 3
 if train_func_selector_var == 0:
     opts.train_function = rbmgenerative                      # todo : 'train_func' correction in opts
@@ -43,8 +45,27 @@ elif train_func_selector_var == 1:
     opts.train_function = rbmdiscriminative
 else:
     opts.train_function = rbmsemisuplearn
+    opts.semisup_type = rbmdiscriminative
 
-opts.semisup_type = rbmdiscriminative
+# Choosing unlabeled data amount:
+if opts.train_function == rbmsemisuplearn:
+    data_size_select_var = 0  # only if semi-supervised train mode
+    if data_size_select_var == 0:
+        # 5000 rows of unlabeled set
+        biomag_unlabeled_1 = sio.loadmat("./data/unlabeled_data_5000_set_001.mat")
+        opts.x_semisup = biomag_unlabeled_1["unlabeled_data_5000_set_001"]
+    elif data_size_select_var == 1:
+        # big data file
+        f2 = h5py.File(r"D:\python_project\rbm-tf\data\data_unlabeled_2.mat", 'r')
+        print(list(f2.keys()))
+        f2_list = list(f2.keys())
+        x_train_un = f2.get('unlabeled')
+        x_train_un_re = x_train_un[:, :]
+        # x_train_un_re_all = x_train_un[:,:]
+        # x_train_un_re = x_train_un_re.T
+        opts.x_semisup = x_train_un_re
+
+
 
 
 opts.learningrate = 0.05
@@ -56,12 +77,13 @@ opts.init_type = "crbm"
 
 
 # print(sio.whosmat(r"D:\python_project\wip\data_labeled_for_py_1_2.mat"))
+# biomag_labeled_1 = sio.loadmat(r"C:\Users\Pap Gergő\PycharmProjects\rbm-tf\data_labeled_for_py_1_2.mat")
 print(sio.whosmat("./data/data_labeled_6.mat"))
 opts.y_train = biomag_labeled_1["y_train"]
 opts.x_train = biomag_labeled_1["x_train"]
 opts.x_val = biomag_labeled_1["x_val"]
 opts.y_val = biomag_labeled_1["y_val"]
-opts.x_semisup = biomag_unlabeled_1["unlabeled_data_5000_set_001"]
+
 #print(biomag_unlabeled_1.shape) #.o["unlabeled_data_5000_set_001"]
 x_train = biomag_labeled_1["x_train"]
 x_test = biomag_labeled_1["test_x"]
