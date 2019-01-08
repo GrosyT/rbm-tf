@@ -15,7 +15,7 @@ def rbmpygivenx(rbm, x, train_or_test):
     n_samples = x.shape[0]
 
     cwx = np.matmul(rbm.W, np.transpose(x))
-    cwx = np.add(np.reshape(rbm.c, (rbm.c.shape[0], 1)), cwx)
+    cwx = np.add(cwx, np.reshape(rbm.c, (rbm.c.shape[0], 1)))
 
 
 
@@ -27,8 +27,8 @@ def rbmpygivenx(rbm, x, train_or_test):
         cwx * rbm.hidden_mask
 
     # rbm.U = rbm.U[:,None,:]
-    #rbm.U2 = np.reshape(rbm.U,(rbm.U.shape[0], 1, 12))  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
-
+    #rbm.U = rbm.U[:,None,:]  # o: rbm.U2 = np.concatenate((rbm.U[:, None, :], np.zeros((rbm.U.shape[0], 99, rbm.U.shape[1]))), axis=1)
+        # :o np.reshape(rbm.U,(rbm.U.shape[0], 1, 12))
     F = rbm.U[:,None,:] + cwx[:, :, None]  # np.ndarray.transpose() or (rbm.U.transpose(0, 2, 1))
 
     rbm.zeros = np.zeros((n_samples, n_classes))
@@ -39,6 +39,7 @@ def rbmpygivenx(rbm, x, train_or_test):
 
         # o: class_log_prob[:, y] = sum(softplus(F[:, :, y])) + rbm.d[y]
         # o2: class_log_prob[:, y] = np.sum(softplus(F[:, :, y]), axis=0) + rbm.d[y]
+
     # normalize probabilities
     if class_log_prob.shape[0] == 1:
         class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (1, 1))
@@ -46,11 +47,13 @@ def rbmpygivenx(rbm, x, train_or_test):
         class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (class_log_prob.shape[0], 1))
     # :o class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
     # o2: class_log_prob_amax = np.reshape((np.amax(class_log_prob, 1)), (100, 1))
+
     class_prob = class_log_prob - class_log_prob_amax
     class_prob = np.exp(class_prob)
     #  o: class_prob = np.exp(class_log_prob - class_log_prob_amax)
     # class_log_prob - (np.amax(class_log_prob, 1))
     # o: class_prob = np.exp(np.subtract(class_log_prob, class_log_prob_amax))
+
     class_prob_sum = np.reshape(np.sum(class_prob, axis=1),(class_prob.shape[0],1))
     class_prob = np.divide(class_prob, class_prob_sum)
 

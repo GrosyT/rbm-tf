@@ -97,7 +97,7 @@ def rbmsemisuplearn(rbm, x, ey, opts, chains_comb, chainsy_comb):
         'dw': grads_type['dw'] + opts.semisup_beta * grads_semisup['dw'],
         'db': grads_type['db'] + opts.semisup_beta * np.reshape(grads_semisup['db'], (grads_type['db'].shape)),
         # O:        'db': grads_type['db'] + opts.semisup_beta * grads_semisup['db'],
-        'dc': grads_type['dc'] + opts.semisup_beta * grads_semisup['dc'],
+        'dc': grads_type['dc'] + opts.semisup_beta * np.reshape(grads_semisup['dc'], (grads_type['dc'].shape)),
         'du': grads_type['du'] + opts.semisup_beta * grads_semisup['du'],
         'dd': grads_type['dd'] + opts.semisup_beta * grads_semisup['dd'],
     }

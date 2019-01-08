@@ -44,9 +44,14 @@ def rbmapplygrads(rbm, grads, x, ey, epoch):
 
     # update weights and momentum of regular weights
     rbm.vW = rbm.curMomentum * rbm.vW + rbm.curLR * dw
-    rbm.vc = rbm.curMomentum * rbm.vc + rbm.curLR * np.reshape(dc,rbm.vc.shape)
+
+    if dc.shape[0] == 1:
+        rbm.vc = rbm.curMomentum * rbm.vc + rbm.curLR * np.transpose(dc)
+    else:
+        rbm.vc = rbm.curMomentum * rbm.vc + np.reshape(rbm.curLR * dc,(dc.shape[0],1))
     if not(not db.any()):
-        rbm.vb = rbm.curMomentum * rbm.vb + rbm.curLR * db
+        rbm.vb = rbm.curMomentum * rbm.vb + np.reshape(rbm.curLR * db,(db.shape[0],1))
+        # bug fixed by: rbm.vb = rbm.curMomentum * rbm.vb + np.reshape(rbm.curLR * db,(db.shape[0],1))
 
     rbm.W = rbm.W + rbm.vW
     rbm.b = rbm.b + rbm.vb
@@ -55,7 +60,8 @@ def rbmapplygrads(rbm, grads, x, ey, epoch):
     # if classRBM update weights and momentum of U and d
     if rbm.classRBM == 1:
         rbm.vU = rbm.curMomentum * rbm.vU + rbm.curLR * du
-        rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.reshape(dd,rbm.vd.shape)
+        rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.reshape(dd,(dd.shape[0],1))
+        # :o rbm.vd = rbm.curMomentum * rbm.vd + rbm.curLR * np.transpose(dd) - shape bug with np.transpose(dd)
         rbm.U = rbm.U + rbm.vU
         rbm.d = rbm.d + rbm.vd
 
